@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951670337237",
+    "project_id": "mobilekihainamcuoi",
+    "storage_bucket": "mobilekihainamcuoi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951670337237:android:844c85e5ae74afb3bd7c5c",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951670337237-l66gjkgg8pu2308e293q506cqc5fmei2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5NWciCQ6Jud51EI1B3g8asJEQS7e6bQE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951670337237-l66gjkgg8pu2308e293q506cqc5fmei2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
