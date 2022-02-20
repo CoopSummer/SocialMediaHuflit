@@ -113,6 +113,18 @@ class LandingHelpers with ChangeNotifier{
               ),
             )
           ]
-        ),)); 
+        ),));  
+  }
+
+  Widget privacyText(BuildContext context){
+    return Positioned(
+      top: 740.0,
+      left: 20.0,
+      right: 20.0,
+      child: Container(
+        child: Column(children: [
+          Text("By continuing you agree the term", style: TextStyle(color: Colors.grey.shade600,fontSize: 12)),
+          Text("By continuing you agree the term", style: TextStyle(color: Colors.grey.shade600,fontSize: 12),)
+        ]),));
   }
 }
