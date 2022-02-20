@@ -4,7 +4,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,7 +16,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ConstantColors constantColors = ConstantColors();
-    return MaterialApp(
+    return MultiProvider(
+      child: MaterialApp(
       home: SplashScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -22,7 +25,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         canvasColor: Colors.transparent
       ),
-    );
+    ) ,providers: [
+      ChangeNotifierProvider(create: (_) => LandingHelpers())
+    ]);
   }
   
 }
