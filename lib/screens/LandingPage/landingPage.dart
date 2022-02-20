@@ -15,7 +15,9 @@ class LandingPage extends StatelessWidget {
       body: Stack(
         children: [
           bodyColors(),
-          Provider.of<LandingHelpers>(context, listen: false).bodyImage(context)
+          Provider.of<LandingHelpers>(context, listen: false).bodyImage(context),
+          Provider.of<LandingHelpers>(context, listen: false).taglineText(context),
+          Provider.of<LandingHelpers>(context, listen: false).mainButton(context)
         ],
       ),
     );
