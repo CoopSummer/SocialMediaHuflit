@@ -8,63 +8,63 @@ class LandingHelpers with ChangeNotifier{
   ConstantColors constantColors= ConstantColors();
   Widget bodyImage(BuildContext context){
     return Container(
-      height: MediaQuery.of(context).size.height*0.65,
+      margin: EdgeInsets.only(top: 20),
+      height: MediaQuery.of(context).size.height*0.4,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage('assets/images/login.png'))
+        image: DecorationImage(image: AssetImage('assets/images/logo.png'))
       ),
     );
   }
 
   Widget taglineText(BuildContext context){
-    return Positioned(
-      top: 450.0,
-      left: 10.0,
+    return Center(
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: 170.0
-        ),
-        child: RichText(
-          text: TextSpan(
-            text: 'Are',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              color: constantColors.whiteColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 30.0,
+          constraints: BoxConstraints(
+            maxWidth: 170.0
+          ),
+          child: RichText(
+            text: TextSpan(
+              text: 'Are',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                color: constantColors.whiteColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 30.0,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: 'You ',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: constantColors.blueColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 34.0,
+                ),
+                ),
+                TextSpan(
+                  text: 'Social ',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: constantColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 34.0,
+                ),
+                ),
+                              TextSpan(
+                  text: '?',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: constantColors.blueColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 34.0,
+                ),
+                )
+              ]
             ),
-            children: <TextSpan>[
-              TextSpan(
-                text: 'You ',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: constantColors.blueColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 34.0,
-              ),
-              ),
-              TextSpan(
-                text: 'Social ',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 34.0,
-              ),
-              ),
-                            TextSpan(
-                text: '?',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  color: constantColors.blueColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 34.0,
-              ),
-              )
-            ]
-          ),
-          ),
-      ));
+            ),
+        ),
+    );
   }
   
   Widget mainButton(BuildContext context){
@@ -102,11 +102,11 @@ class LandingHelpers with ChangeNotifier{
             ),
             GestureDetector(
               child: Container(
-                child: Icon(EvaIcons.emailOutline, color: constantColors.yellowColor,),
+                child: Icon(EvaIcons.emailOutline, color: constantColors.darkYellowColor,),
                 width: 80.0,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: constantColors.yellowColor
+                    color: constantColors.darkYellowColor
                   ),
                   borderRadius: BorderRadius.circular(10.0)
                 ),

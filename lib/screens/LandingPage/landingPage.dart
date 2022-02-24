@@ -32,8 +32,8 @@ class LandingPage extends StatelessWidget {
             0.5,0.9
           ],
           colors: [
-            constantColors.darkColor,
-            constantColors.blueGreyColor
+            constantColors.lightBlueColor,
+            constantColors.whiteColor,
           ]
         )
       ),
