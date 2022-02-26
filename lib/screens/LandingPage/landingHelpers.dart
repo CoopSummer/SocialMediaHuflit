@@ -3,6 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/HomePage/Homepage.dart';
+import 'package:myapp/services/Authentication.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class LandingHelpers with ChangeNotifier{
   ConstantColors constantColors= ConstantColors();
@@ -20,6 +24,7 @@ class LandingHelpers with ChangeNotifier{
   Widget taglineText(BuildContext context){
     return Center(
       child: Container(
+          margin: EdgeInsets.only(top: 100, left: 50),
           constraints: BoxConstraints(
             maxWidth: 170.0
           ),
@@ -37,7 +42,7 @@ class LandingHelpers with ChangeNotifier{
                   text: 'You ',
                   style: TextStyle(
                     fontFamily: 'Poppins',
-                    color: constantColors.blueColor,
+                    color: Colors.amber,
                     fontWeight: FontWeight.bold,
                     fontSize: 34.0,
                 ),
@@ -77,6 +82,11 @@ class LandingHelpers with ChangeNotifier{
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             GestureDetector(
+              onTap: (){
+                Provider.of<Authentication>(context, listen: false).signInWithGoogle().whenComplete((){
+                  Navigator.pushReplacement(context, PageTransition(child: Homepage(), type: PageTransitionType.leftToRight));
+                });
+              },
               child: Container(
                 child: Icon(FontAwesomeIcons.google, color: constantColors.blueColor,),
                 width: 80.0,
