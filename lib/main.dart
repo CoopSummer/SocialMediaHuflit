@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
+import 'package:myapp/services/Authentication.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.transparent
       ),
     ) ,providers: [
-      ChangeNotifierProvider(create: (_) => LandingHelpers())
+      ChangeNotifierProvider(create: (_) => Authentication()),
+      ChangeNotifierProvider(create: (_) => LandingHelpers()),
     ]);
   }
   
