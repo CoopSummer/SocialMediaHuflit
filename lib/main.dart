@@ -5,14 +5,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/firebase_options.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
+import 'package:myapp/screens/LandingPage/landingServices.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(MyApp());
 }
 
@@ -30,6 +34,7 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.transparent
       ),
     ) ,providers: [
+      ChangeNotifierProvider(create: (_) => LandingServices()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => LandingHelpers()),
     ]);
