@@ -39,165 +39,185 @@ class LandingServices with ChangeNotifier{
   }
   
   loginSheet(BuildContext context){
-    return showModalBottomSheet(context: context, builder: (context){
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.25,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150.0),
-              child: Divider(
-                thickness: 4.0,
-                color: constantColors.whiteColor,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  hintText: 'Enter email',
-                  hintStyle: TextStyle(
-                    color: constantColors.whiteColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0
-                  ),
-                ),
-                style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextField(
-                controller: userPasswordController,
-                decoration: InputDecoration(
-                  hintText: 'Enter password',
-                  hintStyle: TextStyle(
-                    color: constantColors.whiteColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0
-                  ),
-                ),
-                style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-                ),
-              ),
-            ),
-            FloatingActionButton(
-              backgroundColor: constantColors.blueColor,
-              child: Icon(FontAwesomeIcons.check, color: constantColors.whiteColor,),
-              onPressed: (){
-                if(emailController.text.isNotEmpty){
-                  Provider.of<Authentication>(context, listen: false).logIntoAccount(emailController.text, userPasswordController.text);
-                }
-                else{
-                  warningText(context, 'Fill all the data ');
-                }
-              }
-            )
-          ],
+    return showModalBottomSheet(context: context, isScrollControlled: true, builder: (context){
+      return Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom
         ),
-        decoration: BoxDecoration(
-          color: constantColors.blueGreyColor,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.25,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                child: Divider(
+                  thickness: 4.0,
+                  color: constantColors.whiteColor,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter email',
+                    hintStyle: TextStyle(
+                      color: constantColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: constantColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: userPasswordController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter password',
+                    hintStyle: TextStyle(
+                      color: constantColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: constantColors.whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0
+                  ),
+                ),
+              ),
+              Expanded(
+                child: FloatingActionButton(
+                  backgroundColor: constantColors.blueColor,
+                  child: Icon(FontAwesomeIcons.check, color: constantColors.whiteColor,),
+                  onPressed: (){
+                    if(emailController.text.isNotEmpty){
+                      Provider.of<Authentication>(context, listen: false).logIntoAccount(emailController.text, userPasswordController.text);
+                    }
+                    else{
+                      warningText(context, 'Fill all the data ');
+                    }
+                  }
+                ),
+              )
+            ],
+          ),
+          decoration: BoxDecoration(
+            color: constantColors.blueGreyColor,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
+          ),
         ),
       );
     });
   }
 
   signInSheet(BuildContext context){
-    return showModalBottomSheet(context: context, builder: (context){
-      return Container(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 150.0),
-              child: Divider(
-                thickness: 4.0,
-                color: constantColors.whiteColor,
+    return showModalBottomSheet(context: context, isScrollControlled: true, builder: (context){
+      return Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom
+        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: constantColors.blueGreyColor,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                child: Divider(
+                  thickness: 4.0,
+                  color: constantColors.whiteColor,
+                ),
               ),
-            ),
-            CircleAvatar(
-              backgroundColor: constantColors.transparent,
-              radius: 80.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextField(
-                controller: userNameController,
-                decoration: InputDecoration(
-                  hintText: 'Enter name',
-                  hintStyle: TextStyle(
+              CircleAvatar(
+                backgroundColor: constantColors.redColor,
+                radius: 80.0,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: userNameController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter name',
+                    hintStyle: TextStyle(
+                      color: constantColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0
+                    ),
+                  ),
+                  style: TextStyle(
                     color: constantColors.whiteColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.0
+                    fontSize: 18.0
                   ),
                 ),
-                style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  hintText: 'Enter email',
-                  hintStyle: TextStyle(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter email',
+                    hintStyle: TextStyle(
+                      color: constantColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0
+                    ),
+                  ),
+                  style: TextStyle(
                     color: constantColors.whiteColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.0
+                    fontSize: 18.0
                   ),
                 ),
-                style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: TextField(
-                controller: userPasswordController,
-                decoration: InputDecoration(
-                  hintText: 'Enter password',
-                  hintStyle: TextStyle(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: TextField(
+                  controller: userPasswordController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter password',
+                    hintStyle: TextStyle(
+                      color: constantColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0
+                    ),
+                  ),
+                  style: TextStyle(
                     color: constantColors.whiteColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16.0
+                    fontSize: 18.0
                   ),
                 ),
-                style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0
-                ),
               ),
-            ),
-            FloatingActionButton(
-              backgroundColor: constantColors.redColor,
-              child: Icon(FontAwesomeIcons.check, color: constantColors.whiteColor,),
-              onPressed: (){
-                if(emailController.text.isNotEmpty){
-                  Provider.of<Authentication>(context, listen: false).createAccount(emailController.text, userPasswordController.text);
-                }
-                else{
-                  warningText(context, 'Fill all the data ');
-                }
-              }
-            )
-          ]
+              Expanded(
+                child: FloatingActionButton(
+                  backgroundColor: constantColors.redColor,
+                  child: Icon(FontAwesomeIcons.check, color: constantColors.whiteColor,),
+                  onPressed: (){
+                    if(emailController.text.isNotEmpty){
+                      Provider.of<Authentication>(context, listen: false).createAccount(emailController.text, userPasswordController.text);
+                    }
+                    else{
+                      warningText(context, 'Fill all the data ');
+                    }
+                  }
+                ),
+              )
+            ]
+          ),
         ),
       );
     });
