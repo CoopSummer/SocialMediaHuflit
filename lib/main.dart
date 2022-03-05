@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/screens/HomePage/HompageHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingServices.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.transparent
       ),
     ) ,providers: [
+      ChangeNotifierProvider(create: (_) => HomepageHelpers()),
       ChangeNotifierProvider(create: (_) => LandingServices()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => LandingHelpers()),
