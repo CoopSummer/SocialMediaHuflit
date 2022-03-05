@@ -10,6 +10,7 @@ import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingServices.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
 import 'package:myapp/services/Authentication.dart';
+import 'package:myapp/services/FirebaseOperations.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.transparent
       ),
     ) ,providers: [
+      ChangeNotifierProvider(create: (_) => FirebaseOperations()),
       ChangeNotifierProvider(create: (_) => LandingServices()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => LandingHelpers()),
