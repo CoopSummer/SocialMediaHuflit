@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/Chatroom/Chatroom.dart';
 import 'package:myapp/screens/Feed/Feed.dart';
+import 'package:myapp/screens/HomePage/HompageHelpers.dart';
 import 'package:myapp/screens/Profile/Profile.dart';
+import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _HomepageState extends State<Homepage> {
           });
         },
       ),
-      bottomNavigationBar:  ,
+      bottomNavigationBar:  Provider.of<HomepageHelpers>(context, listen: false).bottmNavBar(pageIndex, homePageController),
     );
   }
 }
