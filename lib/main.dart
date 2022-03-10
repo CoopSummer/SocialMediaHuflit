@@ -8,6 +8,7 @@ import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingServices.dart';
+import 'package:myapp/screens/LandingPage/landingUtils.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
       ChangeNotifierProvider(create: (_) => LandingServices()),
       ChangeNotifierProvider(create: (_) => Authentication()),
       ChangeNotifierProvider(create: (_) => LandingHelpers()),
+      ChangeNotifierProvider(create: (_) => LandingUltis()),
     ]);
   }
   

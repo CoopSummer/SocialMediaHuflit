@@ -5,9 +5,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/HomePage/Homepage.dart';
 import 'package:myapp/screens/LandingPage/landingServices.dart';
+import 'package:myapp/screens/LandingPage/landingUtils.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class LandingHelpers with ChangeNotifier {
   ConstantColors constantColors = ConstantColors();
@@ -182,7 +184,7 @@ class LandingHelpers with ChangeNotifier {
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold)),
                       onPressed: () {
-                        Provider.of<LandingServices>(context, listen: false).signInSheet(context);
+                        Provider.of<LandingUltis>(context, listen: false).selectAvatarOptionsSheet(context);
                       })
                 ],
               )
