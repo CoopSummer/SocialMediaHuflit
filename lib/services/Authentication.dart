@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:myapp/screens/HomePage/Homepage.dart';
+import 'package:page_transition/page_transition.dart';
 
 class Authentication with ChangeNotifier{
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -10,16 +12,23 @@ class Authentication with ChangeNotifier{
   late String userUid;
   String get getUserUid => userUid;
   
-  Future logIntoAccount(String email, String password) async{
+  Future logIntoAccount(BuildContext context,String email, String password) async{
     UserCredential userCredential = await firebaseAuth
         .signInWithEmailAndPassword(email: email, password: password);
     User? user = userCredential.user;
     userUid = user!.uid;
+    if(userUid!=""){
+      Navigator.pushReplacement(
+        context, 
+        PageTransition(child: Homepage(), type: PageTransitionType.leftToRight));
+    }
     print(userUid);
+    print(email);
+    print(password);
     notifyListeners();
   }
 
-  Future signOutViaEmail(){
+  Future logOutViaEmail(){
     return firebaseAuth.signOut();
   }
 

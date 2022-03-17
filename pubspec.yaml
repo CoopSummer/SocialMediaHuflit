@@ -29,6 +29,7 @@ environment:
 dependencies:
   cloud_firestore: ^3.1.10
   cupertino_icons: ^1.0.2
+  custom_navigation_bar: ^0.8.2
   eva_icons_flutter: ^3.0.2
   firebase_auth: ^3.3.7
   firebase_core: ^1.12.0
@@ -49,7 +50,6 @@ dev_dependencies:
 
 # dependency_overrides:
 #   firebase_app_check_platform_interface: 0.0.3+5
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.
@@ -61,6 +61,7 @@ flutter:
   assets:
     - assets/images/login.png
     - assets/images/logo.png
+    - assets/images/empty.png
   fonts:
     - family: Poppins
       fonts:

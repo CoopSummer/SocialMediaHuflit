@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/HomePage/Homepage.dart';
 import 'package:myapp/screens/LandingPage/landingUtils.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -38,37 +40,40 @@ class LandingServices with ChangeNotifier {
                     backgroundImage: FileImage(
                         Provider.of<LandingUltis>(context, listen: false)
                             .userAvatar)),
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MaterialButton(
-                          child: Text('Reselect',
-                              style: TextStyle(
+                Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        MaterialButton(
+                            child: Text('Reselect',
+                                style: TextStyle(
+                                    color: constantColors.whiteColor,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor:
+                                        constantColors.whiteColor)),
+                            onPressed: () {
+                              Provider.of<LandingUltis>(context, listen: false)
+                                  .pickUserAvatar(context, ImageSource.gallery);
+                            }),
+                        MaterialButton(
+                            color: constantColors.blueColor,
+                            child: Text('Confirm Image',
+                                style: TextStyle(
                                   color: constantColors.whiteColor,
                                   fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: constantColors.whiteColor)),
-                          onPressed: () {
-                            Provider.of<LandingUltis>(context, listen: false)
-                                .pickUserAvatar(context, ImageSource.gallery);
-                          }),
-                      MaterialButton(
-                          color: constantColors.blueColor,
-                          child: Text('Confirm Image',
-                              style: TextStyle(
-                                color: constantColors.whiteColor,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          onPressed: () {
-                            Provider.of<FirebaseOperations>(context,
-                                    listen: false)
-                                .uploadUserAvatar(context)
-                                .whenComplete(() {
-                              signInSheet(context);
-                            });
-                          })
-                    ],
+                                )),
+                            onPressed: () {
+                              Provider.of<FirebaseOperations>(context,
+                                      listen: false)
+                                  .uploadUserAvatar(context)
+                                  .whenComplete(() {
+                                signInSheet(context);
+                              });
+                            })
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -186,8 +191,11 @@ class LandingServices with ChangeNotifier {
                         onPressed: () {
                           if (emailController.text.isNotEmpty) {
                             Provider.of<Authentication>(context, listen: false)
-                                .logIntoAccount(emailController.text,
+                                .logIntoAccount(context, emailController.text,
                                     userPasswordController.text);
+                            // Provider.of<FirebaseOperations>(context,
+                            //         listen: false)
+                            //     .initUserData(context);
                           } else {
                             warningText(context, 'Fill all the data ');
                           }
