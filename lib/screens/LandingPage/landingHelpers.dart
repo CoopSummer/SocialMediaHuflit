@@ -15,8 +15,8 @@ class LandingHelpers with ChangeNotifier {
   ConstantColors constantColors = ConstantColors();
   Widget bodyImage(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height * 0.4,
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.075),
+      height: MediaQuery.of(context).size.height * 0.3,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
           image: DecorationImage(image: AssetImage('assets/images/logo.png'))),

@@ -24,29 +24,42 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: constantColors.darkColor,
+      backgroundColor: constantColors.lightBlueColor,
       body: Center(
-        child: RichText(
-          text: TextSpan(
-            text: 'The',
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              color: constantColors.whiteColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 30.0,
-            ),
-            children: <TextSpan>[
-              TextSpan(
-                text: 'SocialHuflit',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RichText(
+              text: TextSpan(
+                text: 'The',
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  color: constantColors.blueColor,
+                  color: constantColors.whiteColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 34.0,
+                  fontSize: 30.0,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'SocialHuflit',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: constantColors.darkYellowColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 34.0,
+                  ),
+                  )
+                ]
               ),
-              )
-            ]
-          ),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height*0.3,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                image: DecorationImage(image: AssetImage('assets/images/logo.png'))
+              ),
+            )
+          ],
         ),
       ),
     );

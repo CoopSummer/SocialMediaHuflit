@@ -19,7 +19,7 @@ class ProfileHelpers with ChangeNotifier {
         children: [
           Container(
             height: 200.0,
-            width: 180.0,
+            width: MediaQuery.of(context).size.width*0.25,
             child: Column(
               children: [
                 GestureDetector(
@@ -65,20 +65,19 @@ class ProfileHelpers with ChangeNotifier {
           ),
           Container(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
+                Container(
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.06),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                            color: constantColors.darkColor,
                             borderRadius: BorderRadius.circular(15)),
                         height: 70,
-                        width: 80,
+                        width: MediaQuery.of(context).size.width*0.2,
                         child: Column(
                           children: [
                             Text(
@@ -88,22 +87,23 @@ class ProfileHelpers with ChangeNotifier {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
-                            Text(
-                              'Followers',
-                              style: TextStyle(
-                                  color: constantColors.whiteColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12),
+                            Flexible(
+                              child: Text(
+                                'Followers',
+                                style: TextStyle(
+                                    color: constantColors.whiteColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12),
+                              ),
                             )
                           ],
                         ),
                       ),
                       Container(
                         decoration: BoxDecoration(
-                            color: constantColors.darkColor,
                             borderRadius: BorderRadius.circular(15)),
                         height: 70,
-                        width: 80,
+                        width: MediaQuery.of(context).size.width*0.2,
                         child: Column(
                           children: [
                             Text(
@@ -123,37 +123,60 @@ class ProfileHelpers with ChangeNotifier {
                           ],
                         ),
                       ),
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15)),
+                        height: 70,
+                        width: MediaQuery.of(context).size.width*0.2,
+                        child: Column(
+                          children: [
+                            Text(
+                              '0',
+                              style: TextStyle(
+                                  color: constantColors.whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28),
+                            ),
+                            Text(
+                              'Posts',
+                              style: TextStyle(
+                                  color: constantColors.whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: constantColors.darkColor,
-                        borderRadius: BorderRadius.circular(15)),
-                    height: 70,
-                    width: 80,
-                    child: Column(
-                      children: [
-                        Text(
-                          '0',
-                          style: TextStyle(
-                              color: constantColors.whiteColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28),
-                        ),
-                        Text(
-                          'Posts',
-                          style: TextStyle(
-                              color: constantColors.whiteColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        )
-                      ],
-                    ),
-                  ),
-                )
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 16.0),
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(15)),
+                //     height: 70,
+                //     width: 80,
+                //     child: Column(
+                //       children: [
+                //         Text(
+                //           '0',
+                //           style: TextStyle(
+                //               color: constantColors.whiteColor,
+                //               fontWeight: FontWeight.bold,
+                //               fontSize: 28),
+                //         ),
+                //         Text(
+                //           'Posts',
+                //           style: TextStyle(
+                //               color: constantColors.whiteColor,
+                //               fontWeight: FontWeight.bold,
+                //               fontSize: 12),
+                //         )
+                //       ],
+                //     ),
+                //   ),
+                // )
               ],
             ),
           )
