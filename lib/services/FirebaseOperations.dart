@@ -59,4 +59,8 @@ class FirebaseOperations with ChangeNotifier {
   //   final FirebaseAuth auth = FirebaseAuth.instance;
   //   final User? user = auth.currentUser;
   // }
+
+  Future uploadPostData(String postId, dynamic data) async {
+    return FirebaseFirestore.instance.collection('posts').doc(postId).set(data);
+  }
 }
