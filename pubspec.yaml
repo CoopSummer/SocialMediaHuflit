@@ -39,6 +39,7 @@ dependencies:
   font_awesome_flutter: ^9.2.0
   google_sign_in: ^5.2.4
   image_picker: ^0.8.4+9
+  lottie: ^1.2.2
   page_transition: ^2.0.5
   path_provider: ^2.0.9
   provider: ^6.0.2
@@ -63,6 +64,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/empty.png
     - assets/icons/sunflower.png
+    - assets/animations/loading.json
 
   fonts:
     - family: Poppins
