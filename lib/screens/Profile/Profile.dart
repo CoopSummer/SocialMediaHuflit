@@ -72,7 +72,8 @@ class Profile extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return new Column(
+                  return new 
+                  Column(
                     children: [
                       Provider.of<ProfileHelpers>(context)
                           .headerProfile(context, snapshot),

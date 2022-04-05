@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/services/Authentication.dart';
+import 'package:myapp/utils/PostOptions.dart';
 import 'package:myapp/utils/UploadPost.dart';
 import 'package:provider/provider.dart';
 
@@ -177,6 +178,11 @@ class FeedHelpers with ChangeNotifier {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       GestureDetector(
+                        onTap: () {
+                          Provider.of<PostFunctions>(context, listen: false)
+                              .showCommentsSheet(context, documentSnapshot,
+                                  documentSnapshot.get('caption'));
+                        },
                         child: Icon(
                           FontAwesomeIcons.comment,
                           color: constantColors.blueColor,
