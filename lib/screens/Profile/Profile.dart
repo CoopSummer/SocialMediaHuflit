@@ -28,7 +28,8 @@ class Profile extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Provider.of<ProfileHelpers>(context, listen: false).logOutDialog(context);
+                Provider.of<ProfileHelpers>(context, listen: false)
+                    .logOutDialog(context);
               },
               icon: Icon(
                 EvaIcons.logOutOutline,
@@ -72,16 +73,17 @@ class Profile extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return new 
-                  Column(
+                  return new Column(
                     children: [
                       Provider.of<ProfileHelpers>(context)
                           .headerProfile(context, snapshot),
                       Provider.of<ProfileHelpers>(context).divider(),
                       Provider.of<ProfileHelpers>(context)
                           .middleProfile(context, snapshot),
-                      Provider.of<ProfileHelpers>(context)
-                          .footerProfile(context, snapshot),
+                      Expanded(
+                        child: Provider.of<ProfileHelpers>(context)
+                            .footerProfile(context, snapshot),
+                      ),
                     ],
                   );
                 }

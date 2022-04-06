@@ -67,4 +67,8 @@ class FirebaseOperations with ChangeNotifier {
   Future deleteUserData(String UserId) async {
     return FirebaseFirestore.instance.collection('users').doc(UserId).delete();
   }
+
+  Future addAward(String postId, dynamic data) async{
+    return FirebaseFirestore.instance.collection('posts').doc(postId).collection('awards').add(data);
+  }
 }
