@@ -81,14 +81,7 @@ class LandingHelpers with ChangeNotifier {
             GestureDetector(
               onTap: () {
                 Provider.of<Authentication>(context, listen: false)
-                    .signInWithGoogle()
-                    .whenComplete(() {
-                  Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: Homepage(),
-                          type: PageTransitionType.leftToRight));
-                });
+                    .signInWithGoogle(context);
               },
               child: Container(
                 child: Icon(

@@ -27,6 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  carousel_slider: ^4.1.1
   cloud_firestore: ^3.1.10
   cupertino_icons: ^1.0.2
   custom_navigation_bar: ^0.8.2
@@ -43,6 +44,7 @@ dependencies:
   page_transition: ^2.0.5
   path_provider: ^2.0.9
   provider: ^6.0.2
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   flutter_lints: ^1.0.0

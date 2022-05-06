@@ -41,25 +41,6 @@ class ProfileHelpers with ChangeNotifier {
                         fontSize: 16.0),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(EvaIcons.email, color: constantColors.greenColor),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          snapshot.data.data()['useremail'],
-                          style: TextStyle(
-                              color: constantColors.whiteColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
           ),
@@ -150,33 +131,6 @@ class ProfileHelpers with ChangeNotifier {
                     ],
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 16.0),
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(15)),
-                //     height: 70,
-                //     width: 80,
-                //     child: Column(
-                //       children: [
-                //         Text(
-                //           '0',
-                //           style: TextStyle(
-                //               color: constantColors.whiteColor,
-                //               fontWeight: FontWeight.bold,
-                //               fontSize: 28),
-                //         ),
-                //         Text(
-                //           'Posts',
-                //           style: TextStyle(
-                //               color: constantColors.whiteColor,
-                //               fontWeight: FontWeight.bold,
-                //               fontSize: 12),
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // )
               ],
             ),
           )

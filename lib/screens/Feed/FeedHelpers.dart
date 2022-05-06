@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
@@ -80,11 +81,11 @@ class FeedHelpers with ChangeNotifier {
   Widget loadPosts(
       BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
     return ListView(
-        children: (snapshot.data! as QuerySnapshot)
+        children: (snapshot.data as QuerySnapshot)
             .docs
             .map((DocumentSnapshot documentSnapshot) {
       return Container(
-        height: MediaQuery.of(context).size.height * 0.62,
+        height: MediaQuery.of(context).size.height * 0.8,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -138,14 +139,28 @@ class FeedHelpers with ChangeNotifier {
                 )
               ],
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.46,
-              width: MediaQuery.of(context).size.width,
-              child: FittedBox(
-                child:
-                    Image.network(documentSnapshot.get('postimage'), scale: 2),
-              ),
-            ),
+            ([...documentSnapshot.get('postimage')].length > 1)
+                ? Container(
+                    height: MediaQuery.of(context).size.height * 0.46,
+                    width: MediaQuery.of(context).size.width,
+                    child: CarouselSlider(
+                      items: [...documentSnapshot.get('postimage')]
+                          .map((e) => FittedBox(
+                                  child: Image.network(
+                                e,
+                                scale: 2,
+                              )))
+                          .toList(),
+                      options: CarouselOptions(autoPlay: false),
+                    ),
+                  )
+                : Container(
+                    height: MediaQuery.of(context).size.height * 0.46,
+                    width: MediaQuery.of(context).size.width,
+                    child: FittedBox(
+                      child: Image.network(
+                          [...documentSnapshot.get('postimage')][0]),
+                    )),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

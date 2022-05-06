@@ -19,7 +19,6 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     // final User? user = auth.currentUser;
-    // print("-------------------$user");                     //GET GOOGLE USER DATA
     Provider.of<FirebaseOperations>(context, listen: false)
         .initUserData(context)
         .whenComplete(() => setState((){}));

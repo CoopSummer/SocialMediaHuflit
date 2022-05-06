@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/model/User.dart';
 import 'package:myapp/screens/HomePage/Homepage.dart';
 import 'package:myapp/screens/LandingPage/landingUtils.dart';
 import 'package:myapp/services/Authentication.dart';
@@ -11,12 +14,30 @@ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingServices with ChangeNotifier {
   TextEditingController emailController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController userPasswordController = TextEditingController();
   ConstantColors constantColors = ConstantColors();
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late UserList userList;
+
+  Future<void> loadData() async {
+    // SharedPreferences prefs = await _prefs;
+    final users = Users.loadData();
+    userList = UserList.fromJson(await users);
+    print('Loop');
+  }
+
+  Future<void> deleteUser(String useremail) async {
+    SharedPreferences prefs = await _prefs;
+    userList.users.removeWhere((e) => e.useremail == useremail);
+    final String encodedData = Users.encode(userList.users);
+    await prefs.setString('users', encodedData);
+    prefs.reload();
+  }
 
   showUserAvatar(BuildContext context) {
     return showModalBottomSheet(
@@ -87,6 +108,7 @@ class LandingServices with ChangeNotifier {
   }
 
   Widget passwordLessSignIn(BuildContext context) {
+    loadData();
     return SizedBox(
         height: MediaQuery.of(context).size.height * 0.40,
         width: MediaQuery.of(context).size.width,
@@ -96,67 +118,71 @@ class LandingServices with ChangeNotifier {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else {
-              return ListView(
-                children: snapshot.data!.docs
-                    .map((DocumentSnapshot documentSnapshot) {
-                  return ListTile(
-                    trailing: Container(
-                      width: 120.0,
-                      height: 50.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                Provider.of<Authentication>(context,
-                                        listen: false)
-                                    .logIntoAccount(
-                                        context,
-                                        documentSnapshot.get('useremail'),
-                                        documentSnapshot.get('userpassword'))
-                                    .whenComplete(() =>
-                                        Navigator.pushReplacement(
-                                            context,
-                                            PageTransition(
-                                                child: Homepage(),
-                                                type: PageTransitionType
-                                                    .leftToRight)));
-                              },
-                              icon: Icon(
-                                FontAwesomeIcons.check,
-                                color: constantColors.blueColor,
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                Provider.of<FirebaseOperations>(context,
-                                        listen: false)
-                                    .deleteUserData(
-                                        documentSnapshot.get('userid'));
-                              },
-                              icon: Icon(
-                                FontAwesomeIcons.trashAlt,
-                                color: constantColors.redColor,
-                              ))
-                        ],
+              return StatefulBuilder(builder: ((context, setState) {
+                return ListView(
+                  children: userList.users.map((documentSnapshot) {
+                    return ListTile(
+                      trailing: Container(
+                        width: 120.0,
+                        height: 50.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  Provider.of<Authentication>(context,
+                                          listen: false)
+                                      .logIntoAccount(
+                                          context,
+                                          documentSnapshot.useremail ?? '',
+                                          documentSnapshot.userpassword ?? '')
+                                      .whenComplete(() =>
+                                          Navigator.pushReplacement(
+                                              context,
+                                              PageTransition(
+                                                  child: Homepage(),
+                                                  type: PageTransitionType
+                                                      .leftToRight)));
+                                },
+                                icon: Icon(
+                                  FontAwesomeIcons.check,
+                                  color: constantColors.blueColor,
+                                )),
+                            IconButton(
+                                onPressed: () {
+                                  // Provider.of<FirebaseOperations>(context,
+                                  //         listen: false)
+                                  //     .deleteUserData(
+                                  //         documentSnapshot.get('userid'));
+                                  deleteUser(documentSnapshot.useremail ?? '')
+                                  .whenComplete(() => setState(() {
+                                  },));
+                                },
+                                icon: Icon(
+                                  FontAwesomeIcons.trashAlt,
+                                  color: constantColors.redColor,
+                                ))
+                          ],
+                        ),
                       ),
-                    ),
-                    leading: CircleAvatar(
-                      backgroundColor: constantColors.darkColor,
-                      backgroundImage:
-                          NetworkImage(documentSnapshot.get('userimage')),
-                    ),
-                    subtitle: Text(documentSnapshot.get('useremail'),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: constantColors.whiteColor,
-                            fontSize: 12)),
-                    title: Text(documentSnapshot.get('username'),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: constantColors.greenColor)),
-                  );
-                }).toList(),
-              );
+                      leading: CircleAvatar(
+                        backgroundColor: constantColors.darkColor,
+                        backgroundImage:
+                            NetworkImage(documentSnapshot.userimage ?? ''),
+                      ),
+                      subtitle: Text(documentSnapshot.useremail ?? '',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: constantColors.whiteColor,
+                              fontSize: 12)),
+                      title: Text(documentSnapshot.username ?? '',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: constantColors.greenColor)),
+                    );
+                  }).toList(),
+                );
+              }));
             }
           },
         ));
