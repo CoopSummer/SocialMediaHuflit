@@ -91,11 +91,11 @@ class Profile extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              color: constantColors.blueGreyColor.withOpacity(0.6),
             ),
           ),
         ),
       ),
+      backgroundColor: constantColors.whiteCream,
     );
   }
 }

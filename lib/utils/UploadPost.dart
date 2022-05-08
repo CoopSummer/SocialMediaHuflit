@@ -142,28 +142,19 @@ class UploadPost with ChangeNotifier {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-                  child: uploadPostImage.length > 1
-                      ? Container(
-                          height: 200,
-                          width: 400,
-                          child: CarouselSlider(
-                            items: uploadPostImage
-                                .map((e) => Image.file(e, fit: BoxFit.contain))
-                                .toList(),
-                            options: CarouselOptions(autoPlay: false),
-                          ),
-                        )
-                      : Container(
-                          height: 200.0,
-                          width: 400.0,
-                          child: Image.file(
-                            uploadPostImage[0],
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                ),
+                    padding:
+                        const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                    child: Container(
+                      height: 200,
+                      width: 400,
+                      child: CarouselSlider(
+                        items: uploadPostImage
+                            .map((e) => Image.file(e, fit: BoxFit.contain))
+                            .toList(),
+                        options: CarouselOptions(
+                            autoPlay: false, enableInfiniteScroll: false),
+                      ),
+                    )),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
@@ -206,7 +197,7 @@ class UploadPost with ChangeNotifier {
         builder: (context) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom*0.4),
+                bottom: MediaQuery.of(context).viewInsets.bottom * 0.4),
             child: Container(
               height: MediaQuery.of(context).size.height * 0.75,
               width: MediaQuery.of(context).size.width,
@@ -243,27 +234,20 @@ class UploadPost with ChangeNotifier {
                             ],
                           ),
                         ),
-                        uploadPostImage.length > 1
-                            ? Container(
-                                height: 200,
-                                width: 300,
-                                child: CarouselSlider(
-                                    items: uploadPostImage
-                                        .map((e) => Image.file(
-                                              e,
-                                              fit: BoxFit.contain,
-                                            ))
-                                        .toList(),
-                                    options: CarouselOptions(autoPlay: false)),
-                              )
-                            : Container(
-                                height: 200.0,
-                                width: 300.0,
-                                child: Image.file(
-                                  uploadPostImage[0],
-                                  fit: BoxFit.contain,
-                                ),
-                              )
+                        Container(
+                          height: 200,
+                          width: 300,
+                          child: CarouselSlider(
+                              items: uploadPostImage
+                                  .map((e) => Image.file(
+                                        e,
+                                        fit: BoxFit.contain,
+                                      ))
+                                  .toList(),
+                              options: CarouselOptions(
+                                  autoPlay: false,
+                                  enableInfiniteScroll: false)),
+                        )
                       ],
                     ),
                   ),

@@ -36,7 +36,7 @@ class ProfileHelpers with ChangeNotifier {
                   child: Text(
                     snapshot.data.data()['username'],
                     style: TextStyle(
-                        color: constantColors.whiteColor,
+                        color: constantColors.darkGreyColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0),
                   ),
@@ -64,7 +64,7 @@ class ProfileHelpers with ChangeNotifier {
                             Text(
                               '0',
                               style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
@@ -72,7 +72,7 @@ class ProfileHelpers with ChangeNotifier {
                               child: Text(
                                 'Followers',
                                 style: TextStyle(
-                                    color: constantColors.whiteColor,
+                                    color: constantColors.darkGreyColor,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 12),
                               ),
@@ -90,14 +90,14 @@ class ProfileHelpers with ChangeNotifier {
                             Text(
                               '0',
                               style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
                             Text(
                               'Following',
                               style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12),
                             )
@@ -114,14 +114,14 @@ class ProfileHelpers with ChangeNotifier {
                             Text(
                               '0',
                               style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 28),
                             ),
                             Text(
                               'Posts',
                               style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12),
                             )
@@ -145,7 +145,7 @@ class ProfileHelpers with ChangeNotifier {
         height: 25.0,
         width: 350.0,
         child: Divider(
-          color: constantColors.whiteColor,
+          color: constantColors.darkGreyColor,
         ),
       ),
     );
@@ -165,13 +165,13 @@ class ProfileHelpers with ChangeNotifier {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Icon(FontAwesomeIcons.userAstronaut,
-                    color: constantColors.yellowColor, size: 16),
+                    color: constantColors.darkYellowColor, size: 16),
                 Text(
                   "Recently added ",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: constantColors.whiteColor),
+                      color: constantColors.darkGreyColor),
                 )
               ],
             ),
@@ -210,7 +210,7 @@ class ProfileHelpers with ChangeNotifier {
             backgroundColor: constantColors.darkColor,
             title: Text('Log out of Huflit Social ?',
                 style: TextStyle(
-                    color: constantColors.whiteColor,
+                    color: constantColors.darkGreyColor,
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold)),
             actions: [
@@ -218,11 +218,11 @@ class ProfileHelpers with ChangeNotifier {
                   child: Text(
                     'No',
                     style: TextStyle(
-                        color: constantColors.whiteColor,
+                        color: constantColors.darkGreyColor,
                         decoration: TextDecoration.underline,
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
-                        decorationColor: constantColors.whiteColor),
+                        decorationColor: constantColors.darkGreyColor),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -232,7 +232,7 @@ class ProfileHelpers with ChangeNotifier {
                   child: Text(
                     'Yes',
                     style: TextStyle(
-                        color: constantColors.whiteColor,
+                        color: constantColors.darkGreyColor,
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold),
                   ),

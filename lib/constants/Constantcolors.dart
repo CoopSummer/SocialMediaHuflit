@@ -13,4 +13,7 @@ class ConstantColors {
   final Color transperant = Colors.transparent;
   final Color greyColor = Colors.grey.shade600;
   final Color transparent = Colors.transparent;
+  final Color whiteCream = Color(0xfffff8ee);
+  final Color darkGreyColor = Colors.grey.shade800;
+
 }

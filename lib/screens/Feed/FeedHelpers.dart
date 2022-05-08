@@ -47,35 +47,38 @@ class FeedHelpers with ChangeNotifier {
   }
 
   Widget feedBody(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Container(
-          child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: SizedBox(
-                    height: 500,
-                    width: 400,
-                    child: Lottie.asset('assets/animations/loading.json'),
-                  ),
-                );
-              } else {
-                return loadPosts(context, snapshot);
-              }
-            },
+    return CustomScrollView(slivers: [
+      SliverFillRemaining(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Container(
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('posts').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: SizedBox(
+                      height: 500,
+                      width: 400,
+                      child: Lottie.asset('assets/animations/loading.json'),
+                    ),
+                  );
+                } else {
+                  return loadPosts(context, snapshot);
+                }
+              },
+            ),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                    topRight: Radius.circular(18))),
           ),
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              color: constantColors.darkColor.withOpacity(0.6),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(18), topRight: Radius.circular(18))),
         ),
       ),
-    );
+    ]);
   }
 
   Widget loadPosts(
@@ -85,7 +88,7 @@ class FeedHelpers with ChangeNotifier {
             .docs
             .map((DocumentSnapshot documentSnapshot) {
       return Container(
-        height: MediaQuery.of(context).size.height * 0.8,
+        height: MediaQuery.of(context).size.height * 0.62,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -130,7 +133,7 @@ class FeedHelpers with ChangeNotifier {
                               TextSpan(
                                   text: ', 12 giờ trước',
                                   style: TextStyle(
-                                      color: constantColors.lightColor
+                                      color: constantColors.darkGreyColor
                                           .withOpacity(0.8)))
                             ]),
                       )),
@@ -139,28 +142,21 @@ class FeedHelpers with ChangeNotifier {
                 )
               ],
             ),
-            ([...documentSnapshot.get('postimage')].length > 1)
-                ? Container(
-                    height: MediaQuery.of(context).size.height * 0.46,
-                    width: MediaQuery.of(context).size.width,
-                    child: CarouselSlider(
-                      items: [...documentSnapshot.get('postimage')]
-                          .map((e) => FittedBox(
-                                  child: Image.network(
-                                e,
-                                scale: 2,
-                              )))
-                          .toList(),
-                      options: CarouselOptions(autoPlay: false),
-                    ),
-                  )
-                : Container(
-                    height: MediaQuery.of(context).size.height * 0.46,
-                    width: MediaQuery.of(context).size.width,
-                    child: FittedBox(
-                      child: Image.network(
-                          [...documentSnapshot.get('postimage')][0]),
-                    )),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.46,
+              width: MediaQuery.of(context).size.width,
+              child: CarouselSlider(
+                items: [...documentSnapshot.get('postimage')]
+                    .map((e) => Image.network(
+                          e,
+                          scale: 2,
+                          fit: BoxFit.contain,
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                    autoPlay: false, enableInfiniteScroll: false),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -207,7 +203,7 @@ class FeedHelpers with ChangeNotifier {
                               child: Text(
                                 snapshot.data!.docs.length.toString(),
                                 style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.0,
                                 ),
@@ -252,7 +248,7 @@ class FeedHelpers with ChangeNotifier {
                               child: Text(
                                 snapshot.data!.docs.length.toString(),
                                 style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.0,
                                 ),
@@ -277,7 +273,7 @@ class FeedHelpers with ChangeNotifier {
                         },
                         child: Icon(
                           FontAwesomeIcons.award,
-                          color: constantColors.yellowColor,
+                          color: constantColors.darkYellowColor,
                           size: 22.0,
                         ),
                       ),
@@ -297,7 +293,7 @@ class FeedHelpers with ChangeNotifier {
                               child: Text(
                                 snapshot.data!.docs.length.toString(),
                                 style: TextStyle(
-                                  color: constantColors.whiteColor,
+                                  color: constantColors.darkGreyColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18.0,
                                 ),
