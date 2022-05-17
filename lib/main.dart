@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/screens/CommentPage/commentHelpers.dart';
 import 'package:myapp/screens/Feed/FeedHelpers.dart';
 import 'package:myapp/screens/HomePage/HomepageHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => Authentication()),
           ChangeNotifierProvider(create: (_) => LandingHelpers()),
           ChangeNotifierProvider(create: (_) => LandingUltis()),
+          ChangeNotifierProvider(create: (_) => CommentHelpers()),
         ]);
   }
 }
