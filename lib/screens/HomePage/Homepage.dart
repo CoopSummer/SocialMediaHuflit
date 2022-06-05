@@ -31,7 +31,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: constantColors.darkColor,
+      backgroundColor: constantColors.whiteCream,
       body: PageView(
         controller: homePageController,
         children: [Feed(), ChatRoom(), Profile()],
