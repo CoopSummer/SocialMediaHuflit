@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/AltProfile/alt_profile.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:myapp/utils/UploadPost.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class FeedHelpers with ChangeNotifier {
@@ -51,7 +53,10 @@ class FeedHelpers with ChangeNotifier {
         padding: const EdgeInsets.only(top: 8.0),
         child: Container(
           child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('posts')
+                .orderBy('time', descending: true)
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -83,6 +88,8 @@ class FeedHelpers with ChangeNotifier {
         children: (snapshot.data! as QuerySnapshot)
             .docs
             .map((DocumentSnapshot documentSnapshot) {
+      Provider.of<PostFunctions>(context, listen: false)
+          .showTimeAgo(documentSnapshot.get('time'));
       return Container(
         height: MediaQuery.of(context).size.height * 0.62,
         width: MediaQuery.of(context).size.width,
@@ -93,6 +100,19 @@ class FeedHelpers with ChangeNotifier {
             Row(
               children: [
                 GestureDetector(
+                  onTap: () {
+                    if (documentSnapshot.get('useruid') !=
+                        Provider.of<Authentication>(context, listen: false)
+                            .getUserUid) {
+                      Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                              child: AltProfile(
+                                userUid: documentSnapshot.get('useruid'),
+                              ),
+                              type: PageTransitionType.bottomToTop));
+                    }
+                  },
                   child: CircleAvatar(
                     backgroundColor: constantColors.blueGreyColor,
                     radius: 20.0,
@@ -127,13 +147,45 @@ class FeedHelpers with ChangeNotifier {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: ', 12 giờ trước',
+                                  text:
+                                      ' , ${Provider.of<PostFunctions>(context, listen: false).getImageTimePosted.toString()}',
                                   style: TextStyle(
                                       color: constantColors.lightColor
                                           .withOpacity(0.8)))
                             ]),
                       )),
                     ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * .2,
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  color: constantColors.blueColor,
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('posts')
+                        .doc(documentSnapshot.get('caption'))
+                        .collection('awards')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        return new ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: (snapshot.data! as QuerySnapshot)
+                              .docs
+                              .map((DocumentSnapshot documentSnapshot) {
+                            return Container(
+                              height: 30.0,
+                              width: 30.0,
+                              child:
+                                  Image.network(documentSnapshot.get('award')),
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
                   ),
                 )
               ],
@@ -255,6 +307,11 @@ class FeedHelpers with ChangeNotifier {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       GestureDetector(
+                        onLongPress: () {
+                          Provider.of<PostFunctions>(context, listen: false)
+                              .showAwardsPresenter(
+                                  context, documentSnapshot.get('caption'));
+                        },
                         onTap: () {
                           Provider.of<PostFunctions>(context, listen: false)
                               .showRewards(
@@ -303,7 +360,11 @@ class FeedHelpers with ChangeNotifier {
                           EvaIcons.moreVertical,
                           color: constantColors.whiteColor,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Provider.of<PostFunctions>(context, listen: false)
+                              .showPostOptions(
+                                  context, documentSnapshot.get('caption'));
+                        },
                       )
                     : Container(
                         width: 0.0,

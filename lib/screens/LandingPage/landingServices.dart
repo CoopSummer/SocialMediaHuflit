@@ -131,7 +131,8 @@ class LandingServices with ChangeNotifier {
                                 Provider.of<FirebaseOperations>(context,
                                         listen: false)
                                     .deleteUserData(
-                                        documentSnapshot.get('userid'));
+                                        documentSnapshot.get('userid'),
+                                        'users');
                               },
                               icon: Icon(
                                 FontAwesomeIcons.trashAlt,

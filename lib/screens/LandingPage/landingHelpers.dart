@@ -15,7 +15,7 @@ class LandingHelpers with ChangeNotifier {
   ConstantColors constantColors = ConstantColors();
   Widget bodyImage(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.075),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.075),
       height: MediaQuery.of(context).size.height * 0.3,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
@@ -81,14 +81,7 @@ class LandingHelpers with ChangeNotifier {
             GestureDetector(
               onTap: () {
                 Provider.of<Authentication>(context, listen: false)
-                    .signInWithGoogle()
-                    .whenComplete(() {
-                  Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: Homepage(),
-                          type: PageTransitionType.leftToRight));
-                });
+                    .signInWithGoogle(context);
               },
               child: Container(
                 child: Icon(
@@ -162,7 +155,8 @@ class LandingHelpers with ChangeNotifier {
                   color: constantColors.whiteColor,
                 ),
               ),
-              Provider.of<LandingServices>(context, listen: false).passwordLessSignIn(context),
+              Provider.of<LandingServices>(context, listen: false)
+                  .passwordLessSignIn(context),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -174,9 +168,10 @@ class LandingHelpers with ChangeNotifier {
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold)),
                       onPressed: () {
-                        Provider.of<LandingServices>(context, listen: false).loginSheet(context);
+                        Provider.of<LandingServices>(context, listen: false)
+                            .loginSheet(context);
                       }),
-                      MaterialButton(
+                  MaterialButton(
                       color: constantColors.redColor,
                       child: Text('Sign in',
                           style: TextStyle(
@@ -184,7 +179,8 @@ class LandingHelpers with ChangeNotifier {
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold)),
                       onPressed: () {
-                        Provider.of<LandingUltis>(context, listen: false).selectAvatarOptionsSheet(context);
+                        Provider.of<LandingUltis>(context, listen: false)
+                            .selectAvatarOptionsSheet(context);
                       })
                 ],
               )

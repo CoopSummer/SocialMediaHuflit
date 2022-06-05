@@ -64,11 +64,25 @@ class FirebaseOperations with ChangeNotifier {
     return FirebaseFirestore.instance.collection('posts').doc(postId).set(data);
   }
 
-  Future deleteUserData(String UserId) async {
-    return FirebaseFirestore.instance.collection('users').doc(UserId).delete();
+  Future deleteUserData(String UserId, dynamic collection) async {
+    return FirebaseFirestore.instance
+        .collection(collection)
+        .doc(UserId)
+        .delete();
   }
 
-  Future addAward(String postId, dynamic data) async{
-    return FirebaseFirestore.instance.collection('posts').doc(postId).collection('awards').add(data);
+  Future addAward(String postId, dynamic data) async {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('awards')
+        .add(data);
+  }
+
+  Future updateCaption(String postId, dynamic data) async {
+    return FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .update(data);
   }
 }

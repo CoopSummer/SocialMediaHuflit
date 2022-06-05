@@ -5,23 +5,25 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:myapp/screens/HomePage/Homepage.dart';
 import 'package:page_transition/page_transition.dart';
 
-class Authentication with ChangeNotifier{
+class Authentication with ChangeNotifier {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
   late String userUid;
   String get getUserUid => userUid;
-  
-  Future logIntoAccount(BuildContext context,String email, String password) async{
+
+  Future logIntoAccount(
+      BuildContext context, String email, String password) async {
     print(email);
     UserCredential userCredential = await firebaseAuth
         .signInWithEmailAndPassword(email: email, password: password);
     User? user = userCredential.user;
     userUid = user!.uid;
-    if(userUid!=""){
+    if (userUid != "") {
       Navigator.pushReplacement(
-        context, 
-        PageTransition(child: Homepage(), type: PageTransitionType.leftToRight));
+          context,
+          PageTransition(
+              child: Homepage(), type: PageTransitionType.leftToRight));
     }
     print(userUid);
     print(email);
@@ -29,11 +31,11 @@ class Authentication with ChangeNotifier{
     notifyListeners();
   }
 
-  Future logOutViaEmail(){
+  Future logOutViaEmail() {
     return firebaseAuth.signOut();
   }
 
-  Future createAccount(String email, String password) async{
+  Future createAccount(String email, String password) async {
     UserCredential userCredential = await firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     User? user = userCredential.user;
@@ -42,22 +44,30 @@ class Authentication with ChangeNotifier{
     notifyListeners();
   }
 
-  Future signInWithGoogle() async{
-    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;
+  Future signInWithGoogle(BuildContext context) async {
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount!.authentication;
     final AuthCredential authCredential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken
-    );
-    final UserCredential userCredential = await firebaseAuth.signInWithCredential(authCredential);
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken);
+    final UserCredential userCredential =
+        await firebaseAuth.signInWithCredential(authCredential);
     final User? user = userCredential.user;
-    assert(user?.uid !=null);
+    assert(user?.uid != null);
     userUid = user!.uid;
+    if (userUid == '') {
+      Navigator.pushReplacement(
+          context,
+          PageTransition(
+              child: Homepage(), type: PageTransitionType.leftToRight));
+    }
     print('Goolge user id => $userUid');
     notifyListeners();
   }
 
-  Future signOutGoogle() async{
+  Future signOutGoogle() async {
     return googleSignIn.signOut();
   }
 }
