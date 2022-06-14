@@ -374,7 +374,7 @@ class LandingServices with ChangeNotifier {
                                     listen: false)
                                 .createUserCollection(context, {
                               'userpassword': userPasswordController.text,
-                              'userid': Provider.of<Authentication>(context,
+                              'useruid': Provider.of<Authentication>(context,
                                       listen: false)
                                   .getUserUid,
                               'useremail': emailController.text,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
+import 'package:myapp/services/Authentication.dart';
 import 'package:provider/provider.dart';
 
 class ChatRoom extends StatelessWidget {
@@ -20,7 +21,7 @@ class ChatRoom extends StatelessWidget {
         },
       ),
       appBar: AppBar(
-        backgroundColor: constantColors.darkColor.withOpacity(0.6),
+        backgroundColor: constantColors.darkColor.withOpacity(0.4),
         centerTitle: true,
         actions: [
           IconButton(onPressed: () {}, icon: Icon(EvaIcons.moreVertical))
