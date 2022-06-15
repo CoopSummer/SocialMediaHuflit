@@ -216,6 +216,7 @@ class _GroupMessageState extends State<GroupMessage> {
                                         context,
                                         widget.documentSnapshot,
                                         messageController);
+                                messageController.clear();
                               }
                             },
                             icon: Icon(

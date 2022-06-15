@@ -267,7 +267,7 @@ class UploadPost with ChangeNotifier {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            height: MediaQuery.of(context).size.height * 0.1,
+                            height: MediaQuery.of(context).size.height * 0.2,
                             width: MediaQuery.of(context).size.width * 0.8,
                             child: TextField(
                               maxLines: 5,
@@ -318,6 +318,7 @@ class UploadPost with ChangeNotifier {
                                 listen: false)
                             .getInItUserEmail,
                       }).whenComplete(() {
+                        captionController.clear();
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
