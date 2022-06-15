@@ -207,8 +207,7 @@ class _GroupMessageState extends State<GroupMessage> {
                             ),
                           ),
                         ),
-                        FloatingActionButton(
-                            // backgroundColor: constantColors.greenColor,
+                        IconButton(
                             onPressed: () {
                               if (messageController.text.isNotEmpty) {
                                 Provider.of<GroupMessageHelpers>(context,
@@ -219,9 +218,9 @@ class _GroupMessageState extends State<GroupMessage> {
                                         messageController);
                               }
                             },
-                            child: Icon(
+                            icon: Icon(
                               Icons.send_sharp,
-                              color: constantColors.whiteColor,
+                              color: constantColors.darkGreyColor,
                             ))
                       ],
                     ),

@@ -17,6 +17,7 @@ class FeedHelpers with ChangeNotifier {
     return AppBar(
       backgroundColor: constantColors.darkColor.withOpacity(0.6),
       centerTitle: true,
+      leading: Container(),
       actions: [
         IconButton(
             onPressed: () {

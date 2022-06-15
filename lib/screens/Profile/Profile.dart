@@ -18,13 +18,14 @@ class Profile extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            EvaIcons.settings2Outline,
-            color: constantColors.lightBlueColor,
-          ),
-        ),
+        // leading: IconButton(
+        //   onPressed: () {},
+        //   icon: Icon(
+        //     EvaIcons.settings2Outline,
+        //     color: constantColors.lightBlueColor,
+        //   ),
+        // ),
+        leading: Container(),
         actions: [
           IconButton(
               onPressed: () {

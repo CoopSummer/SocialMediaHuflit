@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/CommentPage/commentHelpers.dart';
+import 'package:myapp/services/Authentication.dart';
+import 'package:myapp/services/FirebaseOperations.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:provider/provider.dart';
 
@@ -139,7 +141,6 @@ class _CommentPageState extends State<CommentPage> {
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
-                                    
                                     child: Row(
                                       children: [
                                         IconButton(
@@ -154,8 +155,7 @@ class _CommentPageState extends State<CommentPage> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              0.75,
-                                          // height: MediaQuery.of(context).size.height,
+                                              0.725,
                                           child: Text(
                                             documentSnapshot.get('comment'),
                                             style: TextStyle(
@@ -165,13 +165,29 @@ class _CommentPageState extends State<CommentPage> {
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(
-                                              FontAwesomeIcons.trashAlt,
-                                              color: constantColors.redColor,
-                                              size: 16,
-                                            )),
+                                        Provider.of<FirebaseOperations>(context,
+                                                        listen: false)
+                                                    .getInItUserEmail ==
+                                                documentSnapshot
+                                                    .get('useremail')
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  Provider.of<CommentHelpers>(
+                                                          context,
+                                                          listen: false)
+                                                      .deleteComment(
+                                                          context,
+                                                          widget.docId,
+                                                          documentSnapshot
+                                                              .get('comment'));
+                                                },
+                                                icon: Icon(
+                                                  FontAwesomeIcons.trashAlt,
+                                                  color:
+                                                      constantColors.redColor,
+                                                  size: 16,
+                                                ))
+                                            : Container(),
                                       ],
                                     ),
                                   ),
@@ -204,7 +220,11 @@ class _CommentPageState extends State<CommentPage> {
                                                     onTap: () {
                                                       setState(() {
                                                         height == 0
-                                                            ? height = snapshot.data!.docs.length * 60.0
+                                                            ? height = snapshot
+                                                                    .data!
+                                                                    .docs
+                                                                    .length *
+                                                                60.0
                                                             : height = 0;
                                                       });
                                                     },
@@ -321,6 +341,7 @@ class _CommentPageState extends State<CommentPage> {
                         width: 300.0,
                         height: 20.0,
                         child: TextField(
+                          autofocus: true,
                           textCapitalization: TextCapitalization.sentences,
                           decoration: InputDecoration(
                               hintText: 'Add comment ....',
@@ -337,7 +358,7 @@ class _CommentPageState extends State<CommentPage> {
                       ),
                       FloatingActionButton(
                         onPressed: () async {
-                          print('Adding comment ... ');
+                          
                           if (replyMode) {
                             await Provider.of<CommentHelpers>(context,
                                     listen: false)

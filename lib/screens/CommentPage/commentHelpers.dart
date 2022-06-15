@@ -25,6 +25,16 @@ class CommentHelpers with ChangeNotifier {
     notifyListeners();
   }
 
+  Future deleteComment(BuildContext context, String postId, String comment) async {
+    await FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .doc(comment)
+        .delete();
+    notifyListeners();
+  }
+
   Future addReply(
       BuildContext context, String postId, String comment, String reply) async {
     await FirebaseFirestore.instance

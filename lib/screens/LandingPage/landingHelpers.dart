@@ -73,7 +73,7 @@ class LandingHelpers with ChangeNotifier {
 
   Widget mainButton(BuildContext context) {
     return Positioned(
-        top: 630.0,
+        top: MediaQuery.of(context).size.height * 0.85,
         child: Container(
           width: MediaQuery.of(context).size.width,
           child:
@@ -171,7 +171,7 @@ class LandingHelpers with ChangeNotifier {
                       }),
                       MaterialButton(
                       color: constantColors.redColor,
-                      child: Text('Sign in',
+                      child: Text('Sign up',
                           style: TextStyle(
                               color: constantColors.whiteColor,
                               fontSize: 18.0,
