@@ -95,4 +95,16 @@ class FirebaseOperations with ChangeNotifier {
         .collection('awards')
         .add(data);
   }
+
+  Future submitChatroomData(String chatRoomName, dynamic data) async {
+    return FirebaseFirestore.instance.collection('chatrooms').doc(
+      chatRoomName
+    ).set(data);
+  }
+
+  Future updateChatroomData(String chatRoomName, dynamic data) async {
+    return FirebaseFirestore.instance.collection('chatrooms').doc(
+      chatRoomName
+    ).update(data);
+  }
 }

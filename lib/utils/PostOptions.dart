@@ -60,6 +60,28 @@ class PostFunctions with ChangeNotifier {
             type: PageTransitionType.leftToRight));
   }
 
+  showReply(BuildContext context, String postId, String comment) async {
+    return Container(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .doc(comment)
+            .collection('reply')
+            .snapshots(),
+        builder: (context, snapshot) {
+          return ListView(
+            children:
+                snapshot.data!.docs.map((DocumentSnapshot documentSnapshot) {
+              return Text(documentSnapshot.get('reply'));
+            }).toList(),
+          );
+        },
+      ),
+    );
+  }
+
   showLikes(BuildContext context, String PostId) {
     return showModalBottomSheet(
         context: context,
@@ -104,7 +126,7 @@ class PostFunctions with ChangeNotifier {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else {
-                        return new ListView(
+                        return ListView(
                           children: snapshot.data!.docs
                               .map((DocumentSnapshot documentSnapshot) {
                             return ListTile(

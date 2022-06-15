@@ -6,12 +6,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
 import 'package:myapp/screens/CommentPage/commentHelpers.dart';
 import 'package:myapp/screens/Feed/FeedHelpers.dart';
 import 'package:myapp/screens/HomePage/HomepageHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingServices.dart';
 import 'package:myapp/screens/LandingPage/landingUtils.dart';
+import 'package:myapp/screens/Messaging/GroupMessageHelpers.dart';
 import 'package:myapp/screens/Profile/ProfileHelpers.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
 import 'package:myapp/services/Authentication.dart';
@@ -51,6 +53,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => LandingHelpers()),
           ChangeNotifierProvider(create: (_) => LandingUltis()),
           ChangeNotifierProvider(create: (_) => CommentHelpers()),
+          ChangeNotifierProvider(create: (_) => ChatroomHeplers()),
+          ChangeNotifierProvider(create: (_) => GroupMessageHelpers()),
         ]);
   }
 }

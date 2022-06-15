@@ -7,11 +7,9 @@ class Users {
       {this.userimage,
       this.useremail,
       this.username,
-      // this.useruid,
       this.userpassword});
   factory Users.fromJson(Map<String, dynamic> jsonData) {
     return Users(
-      // useruid: jsonData['useruid'],
       userimage: jsonData['userimage'],
       useremail: jsonData['useremail'],
       userpassword: jsonData['userpassword'],
@@ -22,7 +20,7 @@ class Users {
         'userimage': user.userimage,
         'useremail': user.useremail,
         'username': user.username,
-        // 'useruid': user.useruid,
+      
         'userpassword': user.userpassword,
       };
 
@@ -39,7 +37,6 @@ class Users {
     final prefs = await SharedPreferences.getInstance();
     prefs.reload();
     final String jsonString = prefs.getString('users') ?? '[]';
-    // final List<dynamic> jsonResponse = json.decode(jsonString) ?? json.decode('[]');
     final List<dynamic> jsonResponse = json.decode(jsonString);
     return jsonResponse;
   }

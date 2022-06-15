@@ -150,10 +150,6 @@ class LandingServices with ChangeNotifier {
                                 )),
                             IconButton(
                                 onPressed: () {
-                                  // Provider.of<FirebaseOperations>(context,
-                                  //         listen: false)
-                                  //     .deleteUserData(
-                                  //         documentSnapshot.get('userid'));
                                   deleteUser(documentSnapshot.useremail ?? '')
                                   .whenComplete(() => setState(() {
                                   },));
@@ -374,7 +370,7 @@ class LandingServices with ChangeNotifier {
                                     listen: false)
                                 .createUserCollection(context, {
                               'userpassword': userPasswordController.text,
-                              'userid': Provider.of<Authentication>(context,
+                              'useruid': Provider.of<Authentication>(context,
                                       listen: false)
                                   .getUserUid,
                               'useremail': emailController.text,
