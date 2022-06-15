@@ -89,7 +89,9 @@ class FeedHelpers with ChangeNotifier {
             .docs
             .map((DocumentSnapshot documentSnapshot) {
       return Container(
-        height: MediaQuery.of(context).size.height * 0.62,
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height * 0.62
+        ),
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -113,18 +115,17 @@ class FeedHelpers with ChangeNotifier {
                     children: [
                       Container(
                         child: Text(
-                          documentSnapshot.get('caption'),
+                          documentSnapshot.get('username'),
                           style: TextStyle(
-                            color: constantColors.greenColor,
+                            color: constantColors.blueColor,
+                            fontSize: 14.0,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
                           ),
                         ),
                       ),
                       Container(
                           child: RichText(
                         text: TextSpan(
-                            text: documentSnapshot.get('username'),
                             style: TextStyle(
                               color: constantColors.blueColor,
                               fontSize: 14.0,
@@ -132,7 +133,7 @@ class FeedHelpers with ChangeNotifier {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                  text: ', 12 giờ trước',
+                                  text: '12 giờ trước',
                                   style: TextStyle(
                                       color: constantColors.darkGreyColor
                                           .withOpacity(0.8)))
@@ -142,6 +143,19 @@ class FeedHelpers with ChangeNotifier {
                   ),
                 )
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+              child: Container(
+                child: Text(
+                  documentSnapshot.get('caption'),
+                  style: TextStyle(
+                    color: constantColors.darkGreyColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.46,
@@ -329,3 +343,9 @@ class FeedHelpers with ChangeNotifier {
     }).toList());
   }
 }
+// documentSnapshot.get('caption'),
+//                           style: TextStyle(
+//                             color: constantColors.greenColor,
+//                             fontWeight: FontWeight.bold,
+//                             fontSize: 16.0,
+//                           ),
