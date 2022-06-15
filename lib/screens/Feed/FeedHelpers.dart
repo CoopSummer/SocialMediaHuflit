@@ -90,8 +90,7 @@ class FeedHelpers with ChangeNotifier {
             .map((DocumentSnapshot documentSnapshot) {
       return Container(
         constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height * 0.62
-        ),
+            minHeight: MediaQuery.of(context).size.height * 0.62),
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -107,39 +106,42 @@ class FeedHelpers with ChangeNotifier {
                         NetworkImage(documentSnapshot.get('userimage')),
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.6,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Text(
-                          documentSnapshot.get('username'),
-                          style: TextStyle(
-                            color: constantColors.blueColor,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                          child: RichText(
-                        text: TextSpan(
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Text(
+                            documentSnapshot.get('username'),
                             style: TextStyle(
                               color: constantColors.blueColor,
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold,
                             ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: '12 giờ trước',
-                                  style: TextStyle(
-                                      color: constantColors.darkGreyColor
-                                          .withOpacity(0.8)))
-                            ]),
-                      )),
-                    ],
+                          ),
+                        ),
+                        Container(
+                            child: RichText(
+                          text: TextSpan(
+                              style: TextStyle(
+                                color: constantColors.blueColor,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: '12 giờ trước',
+                                    style: TextStyle(
+                                        color: constantColors.darkGreyColor
+                                            .withOpacity(0.8)))
+                              ]),
+                        )),
+                      ],
+                    ),
                   ),
                 )
               ],
