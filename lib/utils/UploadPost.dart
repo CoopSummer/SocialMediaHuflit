@@ -145,8 +145,8 @@ class UploadPost with ChangeNotifier {
                     padding:
                         const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                     child: Container(
-                      height: 200,
-                      width: 400,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: MediaQuery.of(context).size.width,
                       child: CarouselSlider(
                         items: uploadPostImage
                             .map((e) => Image.file(e, fit: BoxFit.contain))
@@ -267,15 +267,14 @@ class UploadPost with ChangeNotifier {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            height: 120.0,
-                            width: 330.0,
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            width: MediaQuery.of(context).size.width * 0.8,
                             child: TextField(
                               maxLines: 5,
                               textCapitalization: TextCapitalization.words,
                               inputFormatters: [
                                 LengthLimitingTextInputFormatter(100)
                               ],
-                              maxLengthEnforced: true,
                               maxLength: 100,
                               controller: captionController,
                               style: TextStyle(
@@ -301,7 +300,6 @@ class UploadPost with ChangeNotifier {
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0)),
                     onPressed: () async {
-                      print(getUploadPostImageUrl);
                       Provider.of<FirebaseOperations>(context, listen: false)
                           .uploadPostData(captionController.text, {
                         'postimage': getUploadPostImageUrl,
@@ -320,6 +318,8 @@ class UploadPost with ChangeNotifier {
                                 listen: false)
                             .getInItUserEmail,
                       }).whenComplete(() {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       });
                     },

@@ -4,6 +4,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ConstantColors constantColors = ConstantColors();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MultiProvider(
         child: MaterialApp(
           home: SplashScreen(),

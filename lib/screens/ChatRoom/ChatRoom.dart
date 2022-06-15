@@ -23,15 +23,16 @@ class ChatRoom extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: constantColors.darkColor.withOpacity(0.4),
         centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(EvaIcons.moreVertical))
-        ],
-        leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              FontAwesomeIcons.plus,
-              color: constantColors.whiteColor,
-            )),
+        // actions: [
+        //   IconButton(onPressed: () {}, icon: Icon(EvaIcons.moreVertical))
+        // ],
+        leading: Container(),
+        // leading: IconButton(
+        //     onPressed: () {},
+        //     icon: Icon(
+        //       FontAwesomeIcons.plus,
+        //       color: constantColors.whiteColor,
+        //     )),
         title: RichText(
             text: TextSpan(
                 text: 'Chat',
