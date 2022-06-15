@@ -101,4 +101,10 @@ class FirebaseOperations with ChangeNotifier {
       chatRoomName
     ).set(data);
   }
+
+  Future updateChatroomData(String chatRoomName, dynamic data) async {
+    return FirebaseFirestore.instance.collection('chatrooms').doc(
+      chatRoomName
+    ).update(data);
+  }
 }

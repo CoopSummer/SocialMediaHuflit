@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class GroupMessageHelpers with ChangeNotifier {
-  var toggle;
+  bool toggle = false;
   bool MemberJoined = false;
   late String lastMessageTime;
   String get getLastMessageTime => lastMessageTime;
@@ -80,7 +80,7 @@ class GroupMessageHelpers with ChangeNotifier {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: constantColors.darkColor,
+            backgroundColor: constantColors.darkGreyColor,
             title: Text(
               'Add to $chatRoomName',
               style: TextStyle(
@@ -88,42 +88,32 @@ class GroupMessageHelpers with ChangeNotifier {
                   fontSize: 14,
                   fontWeight: FontWeight.bold),
             ),
-            content: TextField(
-              onChanged: (value) async {
-                // print(value);
-                var data = await searchUser(context, value, chatRoomName);
-                print(data);
-                // if (data.toString().contains('useruid')) {
-                //   FirebaseFirestore.instance
-                //       .collection('chatrooms')
-                //       .doc(chatRoomName)
-                //       .collection('members')
-                //       .doc(data['useruid'])
-                //       .set({
-                //     'joined': true,
-                //     'username': data['userimage'],
-                //     'userimage': data['userimage'],
-                //     'useruid': data['useruid'],
-                //     'time': Timestamp.now()
-                //   }).whenComplete(() {
-                //     userEmailController.clear();
-                //     Navigator.pop(context);
-                //   });
-                // } else {
-                // }
-              },
-              controller: userEmailController,
-              keyboardType: TextInputType.emailAddress,
-              style: TextStyle(
-                  color: constantColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-              decoration: InputDecoration(
-                  hintText: "Enter User Email",
-                  hintStyle: TextStyle(
-                      color: constantColors.whiteColor,
+            content: Container(
+              decoration: BoxDecoration(
+                  color: constantColors.whiteCream,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: TextField(
+                  onChanged: (value) async {
+                    var data = await searchUser(context, value, chatRoomName);
+                    // print(data);
+                  },
+                  controller: userEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(
+                      color: constantColors.darkGreyColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16)),
+                      fontSize: 16),
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Enter User Email",
+                      hintStyle: TextStyle(
+                          color: constantColors.darkGreyColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16)),
+                ),
+              ),
             ),
             actions: [
               MaterialButton(
@@ -142,29 +132,27 @@ class GroupMessageHelpers with ChangeNotifier {
               MaterialButton(
                   disabledTextColor: constantColors.transparent,
                   disabledColor: constantColors.redColor,
-                  onLongPress: null,
-                  onPressed: null,
-                  // async {
-                  //   var data = await searchUser(
-                  //       context, userEmailController.text, chatRoomName);
-                  //   if (data.toString().contains('useruid')) {
-                  //     FirebaseFirestore.instance
-                  //         .collection('chatrooms')
-                  //         .doc(chatRoomName)
-                  //         .collection('members')
-                  //         .doc(data['useruid'])
-                  //         .set({
-                  //       'joined': true,
-                  //       'username': data['userimage'],
-                  //       'userimage': data['userimage'],
-                  //       'useruid': data['useruid'],
-                  //       'time': Timestamp.now()
-                  //     }).whenComplete(() {
-                  //       userEmailController.clear();
-                  //       Navigator.pop(context);
-                  //     });
-                  //   } else {}
-                  // },
+                  onPressed: () async {
+                    var data = await searchUser(
+                        context, userEmailController.text, chatRoomName);
+                    if (data.toString().contains('useruid')) {
+                      FirebaseFirestore.instance
+                          .collection('chatrooms')
+                          .doc(chatRoomName)
+                          .collection('members')
+                          .doc(data['useruid'])
+                          .set({
+                        'joined': true,
+                        'username': data['userimage'],
+                        'userimage': data['userimage'],
+                        'useruid': data['useruid'],
+                        'time': Timestamp.now()
+                      }).whenComplete(() {
+                        userEmailController.clear();
+                        Navigator.pop(context);
+                      });
+                    } else {}
+                  },
                   child: Text(
                     'Yes',
                     style: TextStyle(
@@ -427,10 +415,7 @@ class GroupMessageHelpers with ChangeNotifier {
       } else {
         MemberJoined = false;
       }
-      // if (Provider.of<Authentication>(context, listen: false).getUserUid ==
-      //     chatRoomAdminUid) {
-      //   MemberJoined = true;
-      // }
+
       notifyListeners();
     });
   }
@@ -624,5 +609,20 @@ class GroupMessageHelpers with ChangeNotifier {
     } catch (error) {
       return error;
     }
+    // try {
+    //   var user = data.docs.map((e) {
+    //     if (e.get('useremail').toString().contains(userEmail)) {
+    //       print(e.get('useruid'));
+    //       return e;
+    //     }
+    //   });
+    //   return user.map((e) => {
+    //         'useruid': e?.get('useruid'),
+    //         'username': e?.get('username'),
+    //         'userimage': e?.get('userimage')
+    //       });
+    // } catch (error) {
+    //   return error;
+    // }
   }
 }

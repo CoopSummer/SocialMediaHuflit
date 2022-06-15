@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ChatroomHeplers with ChangeNotifier {
-  late bool exist;
+  bool isPublic = true;
   late String lastestMessageTime;
   String get getLastestMessageTime => lastestMessageTime;
   late String chatroomAvatarUrl = '';
@@ -271,54 +271,87 @@ class ChatroomHeplers with ChangeNotifier {
                               scrollDirection: Axis.horizontal,
                               children: snapshot.data!.docs
                                   .map((DocumentSnapshot documentSnapshot) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    chatroomAvatarUrl =
-                                        documentSnapshot.get('image');
-                                    print(chatroomAvatarUrl);
-                                    notifyListeners();
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: chatroomAvatarUrl ==
-                                                      documentSnapshot
-                                                          .get('image')
-                                                  ? constantColors.blueColor
-                                                  : constantColors
-                                                      .transparent)),
-                                      height: 10,
-                                      width: 40,
-                                      child: Image.network(
-                                          documentSnapshot.get('image')),
+                                return StatefulBuilder(
+                                    builder: (context, setState) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        chatroomAvatarUrl =
+                                            documentSnapshot.get('image');
+                                      });
+                                      notifyListeners();
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 16),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: chatroomAvatarUrl ==
+                                                        documentSnapshot
+                                                            .get('image')
+                                                    ? constantColors.blueColor
+                                                    : constantColors
+                                                        .transparent)),
+                                        height: 10,
+                                        width: 40,
+                                        child: Image.network(
+                                            documentSnapshot.get('image')),
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                });
                               }).toList(),
                             );
                           }
                         },
                       ),
                     ),
+                    StatefulBuilder(builder: (context, setState) {
+                      return ListTile(
+                        title: Text(
+                          'Public',
+                          style: TextStyle(
+                              color: constantColors.whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                        leading: Switch(
+                          value: isPublic,
+                          activeColor: constantColors.whiteCream,
+                          onChanged: (bool value) async {
+                            setState(() {
+                              isPublic = value;
+                            });
+                            notifyListeners();
+                          },
+                        ),
+                      );
+                    }),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
+                          decoration: BoxDecoration(
+                              color: constantColors.whiteCream,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15))),
                           width: MediaQuery.of(context).size.width * 0.7,
-                          child: TextField(
-                            controller: chatroomNameController,
-                            style: TextStyle(
-                                color: constantColors.whiteColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                            decoration: InputDecoration(
-                                hintText: "Enter Chatroom ID",
-                                hintStyle: TextStyle(
-                                    color: constantColors.whiteColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: TextField(
+                              controller: chatroomNameController,
+                              style: TextStyle(
+                                  color: constantColors.darkGreyColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Enter Chatroom ID",
+                                  hintStyle: TextStyle(
+                                      color: constantColors.darkGreyColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16)),
+                            ),
                           ),
                         ),
                         FloatingActionButton(
@@ -327,13 +360,14 @@ class ChatroomHeplers with ChangeNotifier {
                                     listen: false)
                                 .submitChatroomData(
                                     chatroomNameController.text, {
+                              'public': true,
                               'roomavatar': getChatroomAvatarUrl,
                               'time': Timestamp.now(),
                               'roomname': chatroomNameController.text,
                               'username': Provider.of<FirebaseOperations>(
                                       context,
                                       listen: false)
-                                  .getInItUserEmail,
+                                  .getInitUserName,
                               'userimage': Provider.of<FirebaseOperations>(
                                       context,
                                       listen: false)
@@ -345,6 +379,12 @@ class ChatroomHeplers with ChangeNotifier {
                               'useruid': Provider.of<Authentication>(context,
                                       listen: false)
                                   .getUserUid,
+                            });
+                            Provider.of<FirebaseOperations>(context,
+                                    listen: false)
+                                .updateChatroomData(
+                                    chatroomNameController.text, {
+                              'public': isPublic,
                             });
                             FirebaseFirestore.instance
                                 .collection('chatrooms')
@@ -379,10 +419,10 @@ class ChatroomHeplers with ChangeNotifier {
                     )
                   ],
                 ),
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: MediaQuery.of(context).size.height * 0.35,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                  color: constantColors.darkColor,
+                  color: constantColors.darkGreyColor,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12.0),
                       topRight: Radius.circular(12.0)),
@@ -409,12 +449,13 @@ class ChatroomHeplers with ChangeNotifier {
           return ListView(
             children:
                 snapshot.data!.docs.map((DocumentSnapshot documentSnapshot) {
-                  print(documentSnapshot.data());
+              var check = checkIfJoined(context, documentSnapshot.id, userUid);
               return FutureBuilder<bool>(
                   future: checkIfJoined(context, documentSnapshot.id, userUid),
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                    if (snapshot.data == true) {
+                    if (snapshot.data == true ||
+                        documentSnapshot.get('public')) {
                       return showChatroom(context, documentSnapshot);
                     } else {
                       return Container();
@@ -554,7 +595,6 @@ class ChatroomHeplers with ChangeNotifier {
         return true;
       }
       return false;
-      // notifyListeners();
     });
   }
 }

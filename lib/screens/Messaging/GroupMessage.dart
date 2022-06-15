@@ -46,6 +46,7 @@ class _GroupMessageState extends State<GroupMessage> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.documentSnapshot.get('public'));
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
@@ -57,13 +58,15 @@ class _GroupMessageState extends State<GroupMessage> {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-                onPressed: () {
-                  Provider.of<GroupMessageHelpers>(context, listen: false)
-                      .addToRoom(context, widget.documentSnapshot.id);
-                },
-                icon: Icon(FontAwesomeIcons.userPlus,
-                    color: constantColors.redColor)),
+            !widget.documentSnapshot.get('public')
+                ? IconButton(
+                    onPressed: () {
+                      Provider.of<GroupMessageHelpers>(context, listen: false)
+                          .addToRoom(context, widget.documentSnapshot.id);
+                    },
+                    icon: Icon(FontAwesomeIcons.userPlus,
+                        color: constantColors.redColor))
+                : Container(),
             IconButton(
                 onPressed: () {
                   Provider.of<GroupMessageHelpers>(context, listen: false)
@@ -180,26 +183,28 @@ class _GroupMessageState extends State<GroupMessage> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                              color: constantColors.darkGreyColor.withOpacity(0.8),
-                              border: Border.all(
-                                  width: 0.8,
-                                  color: constantColors.darkGreyColor),
+                              color:
+                                  constantColors.darkGreyColor.withOpacity(0.8),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(16))),
                           width: MediaQuery.of(context).size.width * 0.75,
-                          child: TextField(
-                            controller: messageController,
-                            style: TextStyle(
-                              color: constantColors.whiteColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: TextField(
+                              controller: messageController,
+                              style: TextStyle(
+                                color: constantColors.whiteColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Drop a hi ...',
+                                  hintStyle: TextStyle(
+                                      color: constantColors.whiteColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
                             ),
-                            decoration: InputDecoration(
-                                hintText: 'Drop a hi ...',
-                                hintStyle: TextStyle(
-                                    color: constantColors.whiteColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
                           ),
                         ),
                         FloatingActionButton(

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class ChatRoom extends StatelessWidget {
   ConstantColors constantColors = ConstantColors();
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
