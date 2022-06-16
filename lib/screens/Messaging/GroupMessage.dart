@@ -47,12 +47,14 @@ class _GroupMessageState extends State<GroupMessage> {
   @override
   Widget build(BuildContext context) {
     print(widget.documentSnapshot.get('public'));
+    // getMessagesQuantity();
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
-            context,
-            PageTransition(
-                child: Homepage(), type: PageTransitionType.leftToRight));
+                context,
+                PageTransition(
+                    child: Homepage(), type: PageTransitionType.leftToRight))
+            .whenComplete(() => getMessagesQuantity());
         return true;
       },
       child: Scaffold(
@@ -65,7 +67,7 @@ class _GroupMessageState extends State<GroupMessage> {
                           .addToRoom(context, widget.documentSnapshot.id);
                     },
                     icon: Icon(FontAwesomeIcons.userPlus,
-                        color: constantColors.redColor))
+                        size: 20, color: constantColors.redColor))
                 : Container(),
             IconButton(
                 onPressed: () {
@@ -106,46 +108,49 @@ class _GroupMessageState extends State<GroupMessage> {
                           widget.documentSnapshot.get('roomavatar')),
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          child: Flexible(
-                            child: RichText(
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                text: widget.documentSnapshot.get('roomname'),
-                                style: TextStyle(
-                                    color: constantColors.whiteColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16),
-                              ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: 35,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: RichText(
+                            overflow: TextOverflow.ellipsis,
+                            text: TextSpan(
+                              text: widget.documentSnapshot.get('roomname'),
+                              style: TextStyle(
+                                  color: constantColors.whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
                             ),
-                          )),
-                      StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('chatrooms')
-                              .doc(widget.documentSnapshot.id)
-                              .collection('members')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Text(
-                                '${snapshot.data!.docs.length} members',
-                                style: TextStyle(
-                                    color: constantColors.greenColor
-                                        .withOpacity(0.5),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12),
-                              );
-                            }
-                          })
-                    ],
+                          ),
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('chatrooms')
+                                .doc(widget.documentSnapshot.id)
+                                .collection('members')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return Text(
+                                  '${snapshot.data!.docs.length} members',
+                                  style: TextStyle(
+                                      color: constantColors.greenColor
+                                          .withOpacity(0.5),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                );
+                              }
+                            })
+                      ],
+                    ),
                   ),
                 ],
               )),
@@ -241,5 +246,21 @@ class _GroupMessageState extends State<GroupMessage> {
         backgroundColor: constantColors.whiteCream,
       ),
     );
+  }
+
+  getMessagesQuantity() {
+    CollectionReference _collection = FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(widget.documentSnapshot.id)
+        .collection('messages');
+    var data = _collection.get();
+    data.then((value) {
+      if (value.docs.length == 0) {
+        FirebaseFirestore.instance
+            .collection('chatrooms')
+            .doc(widget.documentSnapshot.id)
+            .delete();
+      }
+    });
   }
 }
