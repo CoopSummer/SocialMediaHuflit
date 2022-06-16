@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/DirectMessage/DirectMessage.dart';
 import 'package:myapp/screens/Messaging/GroupMessage.dart';
 import 'package:myapp/screens/Messaging/GroupMessageHelpers.dart';
 import 'package:myapp/services/Authentication.dart';
@@ -356,10 +358,12 @@ class ChatroomHeplers with ChangeNotifier {
                         ),
                         FloatingActionButton(
                           onPressed: () async {
-                            await Provider.of<FirebaseOperations>(context,
+                            await Provider.of<FirebaseOperations>(
+                                    context,
                                     listen: false)
                                 .submitChatroomData(
                                     chatroomNameController.text, {
+                              'isDirect': false,
                               'public': true,
                               'roomavatar': getChatroomAvatarUrl,
                               'time': Timestamp.now(),
@@ -449,11 +453,14 @@ class ChatroomHeplers with ChangeNotifier {
           return ListView(
             children:
                 snapshot.data!.docs.map((DocumentSnapshot documentSnapshot) {
-              var check = checkIfJoined(context, documentSnapshot.id, userUid);
+              // var check = checkIfJoined(context, documentSnapshot.id, userUid);
               return FutureBuilder<bool>(
                   future: checkIfJoined(context, documentSnapshot.id, userUid),
                   builder:
                       (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    if (documentSnapshot.get('isDirect') == true) {
+                      return showDirectMessage(context, documentSnapshot);
+                    }
                     if (snapshot.data == true ||
                         documentSnapshot.get('public')) {
                       return showChatroom(context, documentSnapshot);
@@ -579,6 +586,116 @@ class ChatroomHeplers with ChangeNotifier {
         ));
   }
 
+  Widget showDirectMessage(
+      BuildContext context, DocumentSnapshot documentSnapshot) {
+    String userName =
+        Provider.of<FirebaseOperations>(context, listen: false).getInitUserName;
+    String userImage = Provider.of<FirebaseOperations>(context, listen: false)
+        .getInitUserImage;
+    return ListTile(
+        onTap: () {
+          Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  child: DirectMessage(documentSnapshot),
+                  type: PageTransitionType.leftToRight));
+        },
+        // onLongPress: () {
+        //   showChatroomDetails(context, documentSnapshot);
+        // },
+        title: Text(
+          directMessageRoomName(documentSnapshot.get('roomname'), userName),
+          style: TextStyle(
+              color: constantColors.darkColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold),
+        ),
+        trailing: Container(
+          width: 50,
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('chatrooms')
+                .doc(documentSnapshot.id)
+                .collection('messages')
+                .orderBy('time', descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.data?.docs.isEmpty == false) {
+                showLastMessageTime(snapshot.data?.docs.first.get('time'));
+                getLastestMessageTime;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return Text(getLastestMessageTime,
+                      style: TextStyle(
+                          color: constantColors.darkGreyColor,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold));
+                }
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
+        subtitle: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('chatrooms')
+              .doc(documentSnapshot.id)
+              .collection('messages')
+              .orderBy('time', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.data?.docs.isEmpty == false) {
+              if (snapshot.data?.docs.first.get('username') != null &&
+                  snapshot.data?.docs.first.get('message') != null) {
+                return Text(
+                    '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
+                    style: TextStyle(
+                        color: constantColors.greenColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold));
+              }
+              if (snapshot.data!.docs.first.get('username') != null &&
+                  snapshot.data!.docs.first.get('messages') != null) {
+                return Text(
+                    '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
+                    style: TextStyle(
+                        color: constantColors.greenColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold));
+              }
+              if (snapshot.data!.docs.first.get('username') != null &&
+                  snapshot.data!.docs.first.get('sticker') != null) {
+                return Text(
+                    '${snapshot.data!.docs.first.get('username')} : Sticker',
+                    style: TextStyle(
+                        color: constantColors.greenColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold));
+              }
+            }
+            return Text(
+              'No available message',
+              style: TextStyle(
+                  color: constantColors.darkGreyColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            );
+          },
+        ),
+        leading: CircleAvatar(
+          backgroundColor: constantColors.transparent,
+          backgroundImage: NetworkImage(directMessageAvatar(
+              documentSnapshot.get('roomavatar'), userImage)),
+        ));
+  }
+
   Future<bool> checkIfJoined(BuildContext context, String chatRoomName,
       String chatRoomAdminUid) async {
     return await FirebaseFirestore.instance
@@ -596,5 +713,18 @@ class ChatroomHeplers with ChangeNotifier {
       }
       return false;
     });
+  }
+
+  directMessageRoomName(List<dynamic> roomNames, String userName) {
+    var data = roomNames.firstWhere((element) => element != userName);
+    return data;
+  }
+
+  directMessageAvatar(String avatar, String userAvatar) {
+    // print(avatar);
+    var list = avatar.split(' ');
+    var data = list.firstWhere((element) => element != userAvatar);
+    print('---------${list[1]}');
+    return data;
   }
 }

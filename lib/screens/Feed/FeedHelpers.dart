@@ -164,11 +164,13 @@ class FeedHelpers with ChangeNotifier {
               width: MediaQuery.of(context).size.width,
               child: CarouselSlider(
                 items: [...documentSnapshot.get('postimage')]
-                    .map((e) => Image.network(
-                          e,
-                          scale: 2,
-                          fit: BoxFit.contain,
-                        ))
+                    .map((e) => Container(
+                      child: Image.network(
+                            e,
+                            scale: 2,
+                            fit: BoxFit.fitHeight,
+                          ),
+                    ))
                     .toList(),
                 options: CarouselOptions(
                     autoPlay: false, enableInfiniteScroll: false),
@@ -344,6 +346,8 @@ class FeedHelpers with ChangeNotifier {
       );
     }).toList());
   }
+
+  
 }
 // documentSnapshot.get('caption'),
 //                           style: TextStyle(

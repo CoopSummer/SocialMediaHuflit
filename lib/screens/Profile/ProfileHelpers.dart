@@ -1,10 +1,16 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/Feed/FeedHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingPage.dart';
 import 'package:myapp/services/Authentication.dart';
+import 'package:myapp/utils/PostOptions.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +25,7 @@ class ProfileHelpers with ChangeNotifier {
         children: [
           Container(
             height: 200.0,
-            width: MediaQuery.of(context).size.width*0.25,
+            width: MediaQuery.of(context).size.width * 0.25,
             child: Column(
               children: [
                 GestureDetector(
@@ -50,7 +56,8 @@ class ProfileHelpers with ChangeNotifier {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.06),
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.06),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -58,7 +65,7 @@ class ProfileHelpers with ChangeNotifier {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15)),
                         height: 70,
-                        width: MediaQuery.of(context).size.width*0.2,
+                        width: MediaQuery.of(context).size.width * 0.2,
                         child: Column(
                           children: [
                             Text(
@@ -84,7 +91,7 @@ class ProfileHelpers with ChangeNotifier {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15)),
                         height: 70,
-                        width: MediaQuery.of(context).size.width*0.2,
+                        width: MediaQuery.of(context).size.width * 0.2,
                         child: Column(
                           children: [
                             Text(
@@ -108,7 +115,7 @@ class ProfileHelpers with ChangeNotifier {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15)),
                         height: 70,
-                        width: MediaQuery.of(context).size.width*0.2,
+                        width: MediaQuery.of(context).size.width * 0.2,
                         child: Column(
                           children: [
                             Text(
@@ -188,15 +195,50 @@ class ProfileHelpers with ChangeNotifier {
     );
   }
 
-  Widget footerProfile(BuildContext context, dynamic snapshot) {
+  Widget footerProfile(BuildContext context, dynamic documentSnapshot) {
+    // Provider.of
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        child: Image.asset('assets/images/empty.png'),
-        height: MediaQuery.of(context).size.height * 0.5,
-        width: MediaQuery.of(context).size.width,
+        child: CustomScrollView(slivers: [
+          SliverFillRemaining(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Container(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('posts')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: SizedBox(
+                          height: 500,
+                          width: 400,
+                          child: Lottie.asset('assets/animations/loading.json'),
+                        ),
+                      );
+                    } else {
+                      return loadPosts(context, snapshot,
+                          Provider.of<Authentication>(context).getUserUid);
+                    }
+                  },
+                ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(18),
+                        topRight: Radius.circular(18))),
+              ),
+            ),
+          ),
+        ]),
+        // Image.asset('assets/images/empty.png'),
+        // height: MediaQuery.of(context).size.height * 0.5,
+        // width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: constantColors.darkColor.withOpacity(0.4),
+            color: constantColors.darkColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(5.0)),
       ),
     );
@@ -248,5 +290,272 @@ class ProfileHelpers with ChangeNotifier {
             ],
           );
         });
+  }
+
+  Widget loadPosts(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot,
+      String userUid) {
+    return ListView(
+        children: (snapshot.data as QuerySnapshot)
+            .docs
+            .map((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.get('useruid') == userUid) {
+        return Container(
+          constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height * 0.62),
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  GestureDetector(
+                    child: CircleAvatar(
+                      backgroundColor: constantColors.blueGreyColor,
+                      radius: 20.0,
+                      backgroundImage:
+                          NetworkImage(documentSnapshot.get('userimage')),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Text(
+                              documentSnapshot.get('username'),
+                              style: TextStyle(
+                                color: constantColors.blueColor,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                              child: RichText(
+                            text: TextSpan(
+                                style: TextStyle(
+                                  color: constantColors.blueColor,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: '12 giờ trước',
+                                      style: TextStyle(
+                                          color: constantColors.darkGreyColor
+                                              .withOpacity(0.8)))
+                                ]),
+                          )),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                child: Container(
+                  child: Text(
+                    documentSnapshot.get('caption'),
+                    style: TextStyle(
+                      color: constantColors.darkGreyColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.46,
+                width: MediaQuery.of(context).size.width,
+                child: CarouselSlider(
+                  items: [...documentSnapshot.get('postimage')]
+                      .map((e) => Image.network(
+                            e,
+                            scale: 2,
+                            fit: BoxFit.contain,
+                          ))
+                      .toList(),
+                  options: CarouselOptions(
+                      autoPlay: false, enableInfiniteScroll: false),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 80.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onLongPress: () {
+                            Provider.of<PostFunctions>(context, listen: false)
+                                .showLikes(
+                                    context, documentSnapshot.get('caption'));
+                          },
+                          onTap: () {
+                            print('Adding like ...');
+                            Provider.of<PostFunctions>(context, listen: false)
+                                .addLike(
+                                    context,
+                                    documentSnapshot.get('caption'),
+                                    Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid);
+                          },
+                          child: Icon(
+                            FontAwesomeIcons.heart,
+                            color: constantColors.redColor,
+                            size: 22.0,
+                          ),
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(documentSnapshot.get('caption'))
+                              .collection('likes')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  snapshot.data!.docs.length.toString(),
+                                  style: TextStyle(
+                                    color: constantColors.darkGreyColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 80.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Provider.of<PostFunctions>(context, listen: false)
+                                .showCommentsSheet(context, documentSnapshot,
+                                    documentSnapshot.get('caption'));
+                          },
+                          child: Icon(
+                            FontAwesomeIcons.comment,
+                            color: constantColors.blueColor,
+                            size: 22.0,
+                          ),
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(documentSnapshot.get('caption'))
+                              .collection('comments')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  snapshot.data!.docs.length.toString(),
+                                  style: TextStyle(
+                                    color: constantColors.darkGreyColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 80.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Provider.of<PostFunctions>(context, listen: false)
+                                .showRewards(
+                                    context, documentSnapshot.get('caption'));
+                          },
+                          child: Icon(
+                            FontAwesomeIcons.award,
+                            color: constantColors.darkYellowColor,
+                            size: 22.0,
+                          ),
+                        ),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(documentSnapshot.get('caption'))
+                              .collection('awards')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  snapshot.data!.docs.length.toString(),
+                                  style: TextStyle(
+                                    color: constantColors.darkGreyColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  Spacer(),
+                  Provider.of<Authentication>(context, listen: false)
+                              .getUserUid ==
+                          documentSnapshot.get('useruid')
+                      ? IconButton(
+                          icon: Icon(
+                            EvaIcons.moreVertical,
+                            color: constantColors.whiteColor,
+                          ),
+                          onPressed: () {},
+                        )
+                      : Container(
+                          width: 0.0,
+                          height: 0.0,
+                        )
+                ],
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Container();
+      }
+    }).toList());
   }
 }

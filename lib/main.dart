@@ -9,6 +9,7 @@ import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
 import 'package:myapp/screens/CommentPage/commentHelpers.dart';
+import 'package:myapp/screens/DirectMessage/DirectMessageHelper.dart';
 import 'package:myapp/screens/Feed/FeedHelpers.dart';
 import 'package:myapp/screens/HomePage/HomepageHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingHelpers.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ConstantColors constantColors = ConstantColors();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MultiProvider(
         child: MaterialApp(
           home: SplashScreen(),
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => CommentHelpers()),
           ChangeNotifierProvider(create: (_) => ChatroomHeplers()),
           ChangeNotifierProvider(create: (_) => GroupMessageHelpers()),
+          ChangeNotifierProvider(create: (_) => DirectMessageHelpers()),
         ]);
   }
 }
