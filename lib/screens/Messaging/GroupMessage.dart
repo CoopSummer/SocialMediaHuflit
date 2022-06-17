@@ -155,7 +155,7 @@ class _GroupMessageState extends State<GroupMessage> {
                 ],
               )),
           backgroundColor: constantColors.darkColor.withOpacity(0.6),
-          centerTitle: true,
+          // centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Container(
