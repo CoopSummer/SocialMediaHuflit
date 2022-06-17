@@ -151,8 +151,9 @@ class LandingServices with ChangeNotifier {
                             IconButton(
                                 onPressed: () {
                                   deleteUser(documentSnapshot.useremail ?? '')
-                                  .whenComplete(() => setState(() {
-                                  },));
+                                      .whenComplete(() => setState(
+                                            () {},
+                                          ));
                                 },
                                 icon: Icon(
                                   FontAwesomeIcons.trashAlt,
@@ -379,7 +380,13 @@ class LandingServices with ChangeNotifier {
                               'userimage': Provider.of<LandingUltis>(context,
                                       listen: false)
                                   .getUserAvatarURL
-                            });
+                            }).whenComplete(() => Provider.of<Authentication>(
+                                        context,
+                                        listen: false)
+                                    .logIntoAccount(
+                                        context,
+                                        emailController.text,
+                                        userPasswordController.text));
                           });
                         } else {
                           warningText(context, 'Fill all the data ');

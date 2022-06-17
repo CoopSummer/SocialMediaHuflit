@@ -724,7 +724,6 @@ class ChatroomHeplers with ChangeNotifier {
     // print(avatar);
     var list = avatar.split(' ');
     var data = list.firstWhere((element) => element != userAvatar);
-    print('---------${list[1]}');
     return data;
   }
 }
