@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,8 +10,6 @@ import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingServices with ChangeNotifier {
@@ -28,7 +24,7 @@ class LandingServices with ChangeNotifier {
     // SharedPreferences prefs = await _prefs;
     final users = Users.loadData();
     userList = UserList.fromJson(await users);
-    print('Loop');
+    // print('Loop');
   }
 
   Future<void> deleteUser(String useremail) async {
@@ -386,7 +382,14 @@ class LandingServices with ChangeNotifier {
                                     .logIntoAccount(
                                         context,
                                         emailController.text,
-                                        userPasswordController.text));
+                                        userPasswordController.text)
+                                    .whenComplete(() =>
+                                        Navigator.pushReplacement(
+                                            context,
+                                            PageTransition(
+                                                child: Homepage(),
+                                                type: PageTransitionType
+                                                    .leftToRight))));
                           });
                         } else {
                           warningText(context, 'Fill all the data ');
