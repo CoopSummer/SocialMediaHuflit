@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
+import 'package:myapp/screens/AltProfile/AltProfile.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:myapp/utils/UploadPost.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class FeedHelpers with ChangeNotifier {
@@ -54,8 +56,10 @@ class FeedHelpers with ChangeNotifier {
           padding: const EdgeInsets.only(top: 8.0),
           child: Container(
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('posts').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .orderBy('time', descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -88,6 +92,8 @@ class FeedHelpers with ChangeNotifier {
         children: (snapshot.data as QuerySnapshot)
             .docs
             .map((DocumentSnapshot documentSnapshot) {
+      // Provider.of<PostFunctions>(context, listen: false)
+      //     .showTimeAgo(documentSnapshot.get('time'));
       return Container(
         constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height * 0.62),
@@ -99,6 +105,19 @@ class FeedHelpers with ChangeNotifier {
             Row(
               children: [
                 GestureDetector(
+                  onTap: () {
+                    if (documentSnapshot.get('useruid') !=
+                        Provider.of<Authentication>(context, listen: false)
+                            .getUserUid) {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              child: AltProfile(
+                                userUid: documentSnapshot.get('useruid'),
+                              ),
+                              type: PageTransitionType.bottomToTop));
+                    }
+                  },
                   child: CircleAvatar(
                     backgroundColor: constantColors.blueGreyColor,
                     radius: 20.0,
@@ -124,22 +143,29 @@ class FeedHelpers with ChangeNotifier {
                             ),
                           ),
                         ),
-                        Container(
-                            child: RichText(
-                          text: TextSpan(
-                              style: TextStyle(
-                                color: constantColors.blueColor,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text: '12 giờ trước',
+                        FutureBuilder(
+                            future: Provider.of<PostFunctions>(context,
+                                    listen: false)
+                                .showTimeAgo(documentSnapshot.get('time')),
+                            builder: (context, snapshot) {
+                              return Container(
+                                  child: RichText(
+                                text: TextSpan(
                                     style: TextStyle(
-                                        color: constantColors.darkGreyColor
-                                            .withOpacity(0.8)))
-                              ]),
-                        )),
+                                      color: constantColors.blueColor,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: snapshot.data.toString(),
+                                          style: TextStyle(
+                                              color: constantColors
+                                                  .darkGreyColor
+                                                  .withOpacity(0.8)))
+                                    ]),
+                              ));
+                            }),
                       ],
                     ),
                   ),
@@ -165,12 +191,12 @@ class FeedHelpers with ChangeNotifier {
               child: CarouselSlider(
                 items: [...documentSnapshot.get('postimage')]
                     .map((e) => Container(
-                      child: Image.network(
+                          child: Image.network(
                             e,
                             scale: 2,
                             fit: BoxFit.fitHeight,
                           ),
-                    ))
+                        ))
                     .toList(),
                 options: CarouselOptions(
                     autoPlay: false, enableInfiniteScroll: false),
@@ -346,12 +372,4 @@ class FeedHelpers with ChangeNotifier {
       );
     }).toList());
   }
-
-  
 }
-// documentSnapshot.get('caption'),
-//                           style: TextStyle(
-//                             color: constantColors.greenColor,
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 16.0,
-//                           ),
