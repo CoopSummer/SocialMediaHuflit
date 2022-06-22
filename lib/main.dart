@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
+import 'package:myapp/screens/AltProfile/AltProfileHelper.dart';
 import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
 import 'package:myapp/screens/CommentPage/commentHelpers.dart';
 import 'package:myapp/screens/DirectMessage/DirectMessageHelper.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => ChatroomHeplers()),
           ChangeNotifierProvider(create: (_) => GroupMessageHelpers()),
           ChangeNotifierProvider(create: (_) => DirectMessageHelpers()),
+          ChangeNotifierProvider(create: (_) => AltProfileHelper())
         ]);
   }
 }
