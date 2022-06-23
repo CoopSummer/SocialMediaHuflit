@@ -179,6 +179,38 @@ class FeedHelpers with ChangeNotifier {
                               ],
                             ),
                           ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .2,
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection('posts')
+                                .doc(documentSnapshot.get('caption'))
+                                .collection('awards')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                    child: CircularProgressIndicator());
+                              } else {
+                                return new ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: (snapshot.data! as QuerySnapshot)
+                                      .docs
+                                      .map((DocumentSnapshot documentSnapshot) {
+                                    return Container(
+                                      height: 30.0,
+                                      width: 30.0,
+                                      child: Image.network(
+                                          documentSnapshot.get('award')),
+                                    );
+                                  }).toList(),
+                                );
+                              }
+                            },
+                          ),
                         )
                       ],
                     );
