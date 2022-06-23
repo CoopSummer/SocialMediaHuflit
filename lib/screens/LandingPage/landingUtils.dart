@@ -19,15 +19,29 @@ class LandingUltis with ChangeNotifier {
   String get getUserAvatarURL => userAvatarURL;
 
   Future pickUserAvatar(BuildContext context, ImageSource source) async {
+    userAvatar = null as File;
     final pickedUserAvatar = await picker.getImage(source: source);
     pickedUserAvatar == null
         ? print('Select Image')
         : userAvatar = File(pickedUserAvatar.path);
-    print(userAvatar.path);
 
     userAvatar != null
         ? Provider.of<LandingServices>(context, listen: false)
             .showUserAvatar(context)
+        : print('Image upload error');
+    notifyListeners();
+  }
+
+  Future udpateUserAvatar(BuildContext context, ImageSource source) async {
+    userAvatar = null as File;
+    final pickedUserAvatar = await picker.getImage(source: source);
+    pickedUserAvatar == null
+        ? print('Select Image')
+        : userAvatar = File(pickedUserAvatar.path);
+
+    userAvatar != null
+        ? Provider.of<LandingServices>(context, listen: false)
+            .showUpdateUserAvatar(context)
         : print('Image upload error');
     notifyListeners();
   }
@@ -57,11 +71,7 @@ class LandingUltis with ChangeNotifier {
                               fontSize: 18.0)),
                       onPressed: () {
                         pickUserAvatar(context, ImageSource.gallery)
-                            .whenComplete(() {
-                          Navigator.pop(context);
-                          Provider.of<LandingServices>(context, listen: false)
-                              .showUserAvatar(context);
-                        });
+                            .onError((error, stackTrace) => print(error));
                       }),
                   MaterialButton(
                       color: constantColors.blueColor,
@@ -72,11 +82,57 @@ class LandingUltis with ChangeNotifier {
                               fontSize: 18.0)),
                       onPressed: () {
                         pickUserAvatar(context, ImageSource.camera)
-                            .whenComplete(() {
-                          Navigator.pop(context);
-                          Provider.of<LandingServices>(context, listen: false)
-                              .showUserAvatar(context);
-                        });
+                            .onError((error, stackTrace) => print(error));
+                      }),
+                ],
+              )
+            ]),
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width * 0.1,
+            decoration: BoxDecoration(
+                color: constantColors.blueGreyColor,
+                borderRadius: BorderRadius.circular(12.0)),
+          );
+        });
+  }
+
+  Future updateAvatarOptionSheet(BuildContext context) async {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                child: Divider(
+                  thickness: 4.0,
+                  color: constantColors.whiteColor,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MaterialButton(
+                      color: constantColors.blueColor,
+                      child: Text('Gallery',
+                          style: TextStyle(
+                              color: constantColors.whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      onPressed: () {
+                        udpateUserAvatar(context, ImageSource.gallery)
+                            .onError((error, stackTrace) => print(error));
+                      }),
+                  MaterialButton(
+                      color: constantColors.blueColor,
+                      child: Text('Camera',
+                          style: TextStyle(
+                              color: constantColors.whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0)),
+                      onPressed: () {
+                        udpateUserAvatar(context, ImageSource.camera)
+                            .onError((error, stackTrace) => print(error));
                       }),
                 ],
               )

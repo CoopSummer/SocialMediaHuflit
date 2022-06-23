@@ -37,7 +37,6 @@ class Authentication with ChangeNotifier {
         .createUserWithEmailAndPassword(email: email, password: password);
     User? user = userCredential.user;
     userUid = user!.uid;
-    print(userUid);
     notifyListeners();
   }
 

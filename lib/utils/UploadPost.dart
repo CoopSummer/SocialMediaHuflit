@@ -41,8 +41,6 @@ class UploadPost with ChangeNotifier {
                   uploadPostImageVal.map((e) => File(e.path)).toList()
             };
     }
-    // print(uploadPostImage.path);
-
     uploadPostImage == null
         ? print('Image upload error')
         : showPostImage(context);

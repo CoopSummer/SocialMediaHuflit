@@ -9,10 +9,21 @@ import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class PostFunctions with ChangeNotifier {
   TextEditingController commentController = TextEditingController();
   ConstantColors constantColors = ConstantColors();
+  late String imageTimePosted;
+  String get getImageTimePosted => imageTimePosted;
+  showTimeAgo(dynamic timedata) async {
+    Timestamp time = await timedata;
+    DateTime dataTime = time.toDate();
+    imageTimePosted = timeago.format(dataTime);
+    notifyListeners();
+    return imageTimePosted;
+  }
+
   Future addLike(BuildContext context, String PostId, String subDocId) async {
     return FirebaseFirestore.instance
         .collection('posts')
@@ -249,7 +260,6 @@ class PostFunctions with ChangeNotifier {
                                 .map((DocumentSnapshot documentSnapshot) {
                               return GestureDetector(
                                 onTap: () async {
-                                  print(documentSnapshot.get('image'));
                                   await Provider.of<FirebaseOperations>(context,
                                           listen: false)
                                       .addAward(postId, {

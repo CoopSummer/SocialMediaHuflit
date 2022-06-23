@@ -97,7 +97,6 @@ class GroupMessageHelpers with ChangeNotifier {
                 child: TextField(
                   onChanged: (value) async {
                     var data = await searchUser(context, value, chatRoomName);
-                    // print(data);
                   },
                   controller: userEmailController,
                   keyboardType: TextInputType.emailAddress,
@@ -365,7 +364,6 @@ class GroupMessageHelpers with ChangeNotifier {
                                                       .collection('messages')
                                                       .doc(documentSnapshot.id)
                                                       .delete();
-                                                  print(chatRoomName);
                                                 },
                                                 icon: Icon(
                                                   FontAwesomeIcons.trashAlt,

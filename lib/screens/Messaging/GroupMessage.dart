@@ -46,15 +46,13 @@ class _GroupMessageState extends State<GroupMessage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.documentSnapshot.get('public'));
-    // getMessagesQuantity();
     return WillPopScope(
       onWillPop: () async {
+        getMessagesQuantity();
         Navigator.pushReplacement(
-                context,
-                PageTransition(
-                    child: Homepage(), type: PageTransitionType.leftToRight))
-            .whenComplete(() => getMessagesQuantity());
+            context,
+            PageTransition(
+                child: Homepage(), type: PageTransitionType.leftToRight));
         return true;
       },
       child: Scaffold(

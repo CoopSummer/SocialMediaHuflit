@@ -54,10 +54,10 @@ class _DirectMessageState extends State<DirectMessage> {
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
-                context,
-                PageTransition(
-                    child: Homepage(), type: PageTransitionType.leftToRight))
-            .whenComplete(() => getMessagesQuantity());
+            context,
+            PageTransition(
+                child: Homepage(), type: PageTransitionType.leftToRight));
+        getMessagesQuantity();
         return true;
       },
       child: Scaffold(
@@ -101,65 +101,59 @@ class _DirectMessageState extends State<DirectMessage> {
           ),
           title: Container(
               width: MediaQuery.of(context).size.width * 0.5,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: CircleAvatar(
-                      backgroundColor: constantColors.transparent,
-                      backgroundImage: NetworkImage(directMessageAvatar(
-                          widget.documentSnapshot.get('roomavatar'),
-                          userImage)),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    height: 20,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: RichText(
-                            overflow: TextOverflow.ellipsis,
-                            text: TextSpan(
-                              text: directMessageRoomName(
-                                  widget.documentSnapshot.get('roomname'),
-                                  userName),
-                              style: TextStyle(
-                                  color: constantColors.whiteColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chatrooms')
+                      .doc(widget.documentSnapshot.id)
+                      .collection('members')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      var data = snapshot.data!.docs.firstWhere(((element) =>
+                          element.get('useruid') !=
+                          Provider.of<Authentication>(context, listen: false)
+                              .getUserUid));
+                      print(data);
+                      // var user = getUser(data.get('useruid'));
+                      // print(user['useruid']);
+                      return Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: CircleAvatar(
+                              backgroundColor: constantColors.transparent,
+                              backgroundImage:
+                                  NetworkImage(data.get('userimage')),
                             ),
                           ),
-                        ),
-                        // StreamBuilder<QuerySnapshot>(
-                        //     stream: FirebaseFirestore.instance
-                        //         .collection('chatrooms')
-                        //         .doc(widget.documentSnapshot.id)
-                        //         .collection('members')
-                        //         .snapshots(),
-                        //     builder: (context, snapshot) {
-                        //       if (snapshot.connectionState ==
-                        //           ConnectionState.waiting) {
-                        //         return Center(
-                        //             child: CircularProgressIndicator());
-                        //       } else {
-                        //         return Text(
-                        //           '${snapshot.data!.docs.length} members',
-                        //           style: TextStyle(
-                        //               color: constantColors.greenColor
-                        //                   .withOpacity(0.5),
-                        //               fontWeight: FontWeight.bold,
-                        //               fontSize: 12),
-                        //         );
-                        //       }
-                        //     })
-                      ],
-                    ),
-                  ),
-                ],
-              )),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            height: 20,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: RichText(
+                                    overflow: TextOverflow.ellipsis,
+                                    text: TextSpan(
+                                      text: data.get('username'),
+                                      style: TextStyle(
+                                          color: constantColors.whiteColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  })),
           backgroundColor: constantColors.darkColor.withOpacity(0.6),
           // centerTitle: true,
         ),
@@ -255,14 +249,12 @@ class _DirectMessageState extends State<DirectMessage> {
     );
   }
 
-  directMessageRoomName(String roomName, String userName) {
-    var list = roomName.split('/');
-    var data = list.firstWhere((element) => element != userName);
+  directMessageRoomName(List<dynamic> roomNames, String userName) {
+    var data = roomNames.firstWhere((element) => element != userName);
     return data;
   }
 
   directMessageAvatar(String avatar, String userAvatar) {
-    // print(avatar);
     var list = avatar.split(' ');
     var data = list.firstWhere((element) => element != userAvatar);
     return data;
@@ -282,5 +274,38 @@ class _DirectMessageState extends State<DirectMessage> {
             .delete();
       }
     });
+  }
+
+  getUser(String userUid) async {
+    // FirebaseFirestore.instance.collection('users').where(userUid, isEqualTo: 'useruid').get().then((value) => value);
+    CollectionReference collectionReference =
+        (FirebaseFirestore.instance.collection('users'));
+    var data = await collectionReference.get();
+    try {
+      var user = data.docs.firstWhere((e) => e.get('useruid') == userUid);
+      return {
+        'useruid': user.get('useruid'),
+        'username': user.get('username'),
+        'userimage': user.get('userimage')
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  getUserData(BuildContext context, String userUid, String chatRoomId) async {
+    DocumentReference _doc =
+        (FirebaseFirestore.instance.collection('users').doc(userUid));
+    var data = await _doc.get();
+    try {
+      // var user = data.docs.firstWhere((e) => e.get('useremail') == userEmail);
+      return {
+        'useruid': data.get('useruid'),
+        'username': data.get('username'),
+        'userimage': data.get('userimage')
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

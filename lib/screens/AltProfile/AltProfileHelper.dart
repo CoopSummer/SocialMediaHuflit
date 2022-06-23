@@ -1,55 +1,208 @@
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/constants/Constantcolors.dart';
-import 'package:myapp/screens/Feed/FeedHelpers.dart';
-import 'package:myapp/screens/LandingPage/landingPage.dart';
-import 'package:myapp/screens/LandingPage/landingUtils.dart';
-import 'package:myapp/services/Authentication.dart';
+import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
+import 'package:myapp/screens/HomePage/Homepage.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-class ProfileHelpers with ChangeNotifier {
-  var userImage;
+class AltProfileHelper with ChangeNotifier {
   ConstantColors constantColors = ConstantColors();
-  Widget headerProfile(BuildContext context, dynamic snapshot) {
+  appBar(BuildContext context) {
+    return AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios_rounded),
+        color: constantColors.whiteColor,
+        onPressed: () {
+          Navigator.pushReplacement(
+              context,
+              PageTransition(
+                  child: Homepage(), type: PageTransitionType.bottomToTop));
+        },
+      ),
+      backgroundColor: constantColors.blueGreyColor.withOpacity(0.4),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          icon: Icon(
+            EvaIcons.moreVertical,
+            color: constantColors.whiteColor,
+          ),
+          color: constantColors.whiteColor,
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                PageTransition(
+                    child: Homepage(), type: PageTransitionType.bottomToTop));
+          },
+        ),
+      ],
+      title: RichText(
+          text: TextSpan(
+              text: 'The',
+              style: TextStyle(
+                  color: constantColors.whiteColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0),
+              children: <TextSpan>[
+            TextSpan(
+                text: 'Social',
+                style: TextStyle(
+                    color: constantColors.blueColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0))
+          ])),
+    );
+  }
+
+  Widget headerProfile(BuildContext context, dynamic snapshot, String userUid) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.3,
+      height: MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 200.0,
-            width: MediaQuery.of(context).size.width * 0.25,
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Provider.of<LandingUltis>(context, listen: false)
-                        .updateAvatarOptionSheet(context);
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: constantColors.transparent,
-                    radius: 60.0,
-                    backgroundImage:
-                        NetworkImage(snapshot.data.data()['userimage']),
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.18,
+                width: MediaQuery.of(context).size.width * 0.25,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: CircleAvatar(
+                        backgroundColor: constantColors.transparent,
+                        radius: 60.0,
+                        backgroundImage:
+                            NetworkImage(snapshot.data.data()['userimage']),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.18,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.06),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            height: 70,
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: Column(
+                              children: [
+                                Text(
+                                  '0',
+                                  style: TextStyle(
+                                      color: constantColors.darkColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 28),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    'Followers',
+                                    style: TextStyle(
+                                        color: constantColors.darkColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            height: 70,
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: Column(
+                              children: [
+                                Text(
+                                  '0',
+                                  style: TextStyle(
+                                      color: constantColors.darkColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 28),
+                                ),
+                                Text(
+                                  'Following',
+                                  style: TextStyle(
+                                      color: constantColors.darkColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15)),
+                            height: 70,
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            child: Column(
+                              children: [
+                                Text(
+                                  '0',
+                                  style: TextStyle(
+                                      color: constantColors.darkColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 28),
+                                ),
+                                Text(
+                                  'Posts',
+                                  style: TextStyle(
+                                      color: constantColors.darkColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0, left: 30),
+            child: Text(
+              snapshot.data.data()['username'],
+              style: TextStyle(
+                  color: constantColors.darkColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Icon(EvaIcons.email, color: constantColors.greenColor),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(left: 8),
                   child: Text(
-                    snapshot.data.data()['username'],
+                    snapshot.data.data()['useremail'],
                     style: TextStyle(
-                        color: constantColors.darkGreyColor,
+                        color: constantColors.darkColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0),
                   ),
@@ -57,96 +210,46 @@ class ProfileHelpers with ChangeNotifier {
               ],
             ),
           ),
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.06),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15)),
-                        height: 70,
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        child: Column(
-                          children: [
-                            Text(
-                              '0',
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Followers',
-                                style: TextStyle(
-                                    color: constantColors.darkGreyColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15)),
-                        height: 70,
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        child: Column(
-                          children: [
-                            Text(
-                              '0',
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                            ),
-                            Text(
-                              'Following',
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15)),
-                        height: 70,
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        child: Column(
-                          children: [
-                            Text(
-                              '0',
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                            ),
-                            Text(
-                              'Posts',
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        width: 1.5,
+                        color: constantColors.lightGreyColor,
+                        style: BorderStyle.solid))),
+                onPressed: () {},
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 50, right: 50),
+                  child: Text(
+                    'Follow',
+                    style: TextStyle(
+                        color: constantColors.darkGreyColor,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-              ],
-            ),
+              ),
+              OutlinedButton(
+                  style: ButtonStyle(
+                      side: MaterialStateProperty.all(BorderSide(
+                          width: 1.5,
+                          color: constantColors.lightGreyColor,
+                          style: BorderStyle.solid))),
+                  onPressed: () {
+                    Provider.of<ChatroomHeplers>(context, listen: false)
+                        .createDirectMessage(context, snapshot);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 50, right: 50),
+                    child: Text(
+                      'Message',
+                      style: TextStyle(
+                          color: constantColors.darkGreyColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ))
+            ],
           )
         ],
       ),
@@ -159,7 +262,7 @@ class ProfileHelpers with ChangeNotifier {
         height: 25.0,
         width: 350.0,
         child: Divider(
-          color: constantColors.darkGreyColor,
+          color: constantColors.darkColor,
         ),
       ),
     );
@@ -179,13 +282,13 @@ class ProfileHelpers with ChangeNotifier {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Icon(FontAwesomeIcons.userAstronaut,
-                    color: constantColors.darkYellowColor, size: 16),
+                    color: constantColors.yellowColor, size: 16),
                 Text(
                   "Recently added ",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: constantColors.darkGreyColor),
+                      color: constantColors.darkColor),
                 )
               ],
             ),
@@ -203,6 +306,7 @@ class ProfileHelpers with ChangeNotifier {
   }
 
   Widget footerProfile(BuildContext context, dynamic documentSnapshot) {
+    print(documentSnapshot.data.data()['userimage']);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -227,7 +331,7 @@ class ProfileHelpers with ChangeNotifier {
                       );
                     } else {
                       return loadPosts(context, snapshot,
-                          Provider.of<Authentication>(context).getUserUid);
+                          documentSnapshot.data.data()['useruid']);
                     }
                   },
                 ),
@@ -246,54 +350,6 @@ class ProfileHelpers with ChangeNotifier {
             borderRadius: BorderRadius.circular(5.0)),
       ),
     );
-  }
-
-  logOutDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: constantColors.darkColor,
-            title: Text('Log out of Huflit Social ?',
-                style: TextStyle(
-                    color: constantColors.darkGreyColor,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold)),
-            actions: [
-              MaterialButton(
-                  child: Text(
-                    'No',
-                    style: TextStyle(
-                        color: constantColors.darkGreyColor,
-                        decoration: TextDecoration.underline,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        decorationColor: constantColors.darkGreyColor),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }),
-              MaterialButton(
-                  color: constantColors.redColor,
-                  child: Text(
-                    'Yes',
-                    style: TextStyle(
-                        color: constantColors.darkGreyColor,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () {
-                    Provider.of<Authentication>(context, listen: false)
-                        .logOutViaEmail()
-                        .whenComplete(() => Navigator.pushReplacement(
-                            context,
-                            PageTransition(
-                                child: LandingPage(),
-                                type: PageTransitionType.bottomToTop)));
-                  })
-            ],
-          );
-        });
   }
 
   Widget loadPosts(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot,

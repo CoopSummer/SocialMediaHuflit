@@ -70,11 +70,11 @@ class Profile extends StatelessWidget {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return new Column(
+                  return Column(
                     children: [
                       Provider.of<ProfileHelpers>(context)
                           .headerProfile(context, snapshot),

@@ -21,10 +21,8 @@ class LandingServices with ChangeNotifier {
   late UserList userList;
 
   Future<void> loadData() async {
-    // SharedPreferences prefs = await _prefs;
     final users = Users.loadData();
     userList = UserList.fromJson(await users);
-    // print('Loop');
   }
 
   Future<void> deleteUser(String useremail) async {
@@ -32,7 +30,7 @@ class LandingServices with ChangeNotifier {
     userList.users.removeWhere((e) => e.useremail == useremail);
     final String encodedData = Users.encode(userList.users);
     await prefs.setString('users', encodedData);
-    prefs.reload();
+    await prefs.reload();
   }
 
   showUserAvatar(BuildContext context) {
@@ -72,7 +70,9 @@ class LandingServices with ChangeNotifier {
                                         constantColors.whiteColor)),
                             onPressed: () {
                               Provider.of<LandingUltis>(context, listen: false)
-                                  .pickUserAvatar(context, ImageSource.gallery);
+                                  .pickUserAvatar(context, ImageSource.gallery)
+                                ..onError((error, stackTrace) =>
+                                    AlertDialog(title: Text(error.toString())));
                             }),
                         MaterialButton(
                             color: constantColors.blueColor,
@@ -87,6 +87,88 @@ class LandingServices with ChangeNotifier {
                                   .uploadUserAvatar(context)
                                   .whenComplete(() {
                                 signInSheet(context);
+                              });
+                            })
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+            decoration: BoxDecoration(
+              color: constantColors.blueGreyColor,
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+          );
+        });
+  }
+
+  showUpdateUserAvatar(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.30,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                  child: Divider(
+                    thickness: 4.0,
+                    color: constantColors.whiteColor,
+                  ),
+                ),
+                CircleAvatar(
+                    radius: 80.0,
+                    backgroundColor: constantColors.transparent,
+                    backgroundImage: FileImage(
+                        Provider.of<LandingUltis>(context, listen: false)
+                            .userAvatar)),
+                Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        MaterialButton(
+                            child: Text('Reselect',
+                                style: TextStyle(
+                                    color: constantColors.whiteColor,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor:
+                                        constantColors.whiteColor)),
+                            onPressed: () {
+                              Provider.of<LandingUltis>(context, listen: false)
+                                  .udpateUserAvatar(
+                                      context, ImageSource.gallery)
+                                ..onError((error, stackTrace) =>
+                                    AlertDialog(title: Text(error.toString())));
+                            }),
+                        MaterialButton(
+                            color: constantColors.blueColor,
+                            child: Text('Confirm Image',
+                                style: TextStyle(
+                                  color: constantColors.whiteColor,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            onPressed: () {
+                              var useruid = Provider.of<Authentication>(context,
+                                      listen: false)
+                                  .getUserUid;
+                              Provider.of<FirebaseOperations>(context,
+                                      listen: false)
+                                  .uploadUserAvatar(context)
+                                  .whenComplete(() {
+                                Provider.of<FirebaseOperations>(context,
+                                        listen: false)
+                                    .updateUserData(useruid, {
+                                  'userimage': Provider.of<LandingUltis>(
+                                          context,
+                                          listen: false)
+                                      .getUserAvatarURL
+                                });
+                                Navigator.pop(context);
                               });
                             })
                       ],
@@ -146,10 +228,11 @@ class LandingServices with ChangeNotifier {
                                 )),
                             IconButton(
                                 onPressed: () {
-                                  deleteUser(documentSnapshot.useremail ?? '')
-                                      .whenComplete(() => setState(
-                                            () {},
-                                          ));
+                                  setState(() {
+                                    deleteUser(
+                                        documentSnapshot.useremail ?? '');
+                                  });
+                                  // deleteUser(documentSnapshot.useremail ?? '');
                                 },
                                 icon: Icon(
                                   FontAwesomeIcons.trashAlt,
@@ -423,4 +506,14 @@ class LandingServices with ChangeNotifier {
           );
         });
   }
+
+  // Future updateUserAvatar(BuildContext context) async {
+  //   var useruid =
+  //       Provider.of<Authentication>(context, listen: false).getUserUid;
+  //   print(Provider.of<LandingUltis>(context, listen: false).getUserAvatar);
+  //   return FirebaseFirestore.instance.collection('users').doc(useruid).update({
+  //     'userimage':
+  //         Provider.of<LandingUltis>(context, listen: false).getUserAvatar
+  //   });
+  // }
 }

@@ -358,8 +358,7 @@ class ChatroomHeplers with ChangeNotifier {
                         ),
                         FloatingActionButton(
                           onPressed: () async {
-                            await Provider.of<FirebaseOperations>(
-                                    context,
+                            await Provider.of<FirebaseOperations>(context,
                                     listen: false)
                                 .submitChatroomData(
                                     chatroomNameController.text, {
@@ -412,6 +411,7 @@ class ChatroomHeplers with ChangeNotifier {
                                   .getUserUid,
                               'time': Timestamp.now()
                             });
+                            // Navigator.
                           },
                           backgroundColor: constantColors.blueGreyColor,
                           child: Icon(
@@ -586,12 +586,72 @@ class ChatroomHeplers with ChangeNotifier {
         ));
   }
 
+  createDirectMessage(BuildContext context, dynamic snapshot) async {
+    String roomId = snapshot.data.data()['username'] +
+        ' ' +
+        Provider.of<FirebaseOperations>(context, listen: false).getInitUserName;
+    Provider.of<FirebaseOperations>(context, listen: false)
+        .submitChatroomData(roomId, {
+      'isDirect': true,
+      'public': false,
+      'roomavatar': '',
+      'time': Timestamp.now(),
+      'roomname': roomId,
+      'username': Provider.of<FirebaseOperations>(context, listen: false)
+          .getInitUserName,
+      'userimage': Provider.of<FirebaseOperations>(context, listen: false)
+          .getInitUserImage,
+      'useremail': Provider.of<FirebaseOperations>(context, listen: false)
+          .getInItUserEmail,
+      'useruid': Provider.of<Authentication>(context, listen: false).getUserUid,
+    });
+    // Provider.of<FirebaseOperations>(context, listen: false)
+    //     .updateChatroomData(chatroomNameController.text, {
+    //   'public': isPublic,
+    // });
+    FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(roomId)
+        .collection('members')
+        .doc(Provider.of<Authentication>(context, listen: false).getUserUid)
+        .set({
+      'joined': true,
+      'username': Provider.of<FirebaseOperations>(context, listen: false)
+          .getInitUserName,
+      'userimage': Provider.of<FirebaseOperations>(context, listen: false)
+          .getInitUserImage,
+      'useruid': Provider.of<Authentication>(context, listen: false).getUserUid,
+      'time': Timestamp.now()
+    });
+    FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(roomId)
+        .collection('members')
+        .doc(snapshot.data.data()['useruid'])
+        .set({
+      'joined': true,
+      'username': snapshot.data.data()['username'],
+      'userimage': snapshot.data.data()['userimage'],
+      'useruid': snapshot.data.data()['useruid'],
+      'time': Timestamp.now()
+    });
+
+    var data = await Provider.of<FirebaseOperations>(context, listen: false)
+        .getChatroomData(roomId);
+
+    Navigator.pushReplacement(
+        context,
+        PageTransition(
+            child: DirectMessage(data), type: PageTransitionType.leftToRight));
+  }
+
   Widget showDirectMessage(
       BuildContext context, DocumentSnapshot documentSnapshot) {
     String userName =
         Provider.of<FirebaseOperations>(context, listen: false).getInitUserName;
     String userImage = Provider.of<FirebaseOperations>(context, listen: false)
         .getInitUserImage;
+    var data;
     return ListTile(
         onTap: () {
           Navigator.pushReplacement(
@@ -600,16 +660,30 @@ class ChatroomHeplers with ChangeNotifier {
                   child: DirectMessage(documentSnapshot),
                   type: PageTransitionType.leftToRight));
         },
-        // onLongPress: () {
-        //   showChatroomDetails(context, documentSnapshot);
-        // },
-        title: Text(
-          directMessageRoomName(documentSnapshot.get('roomname'), userName),
-          style: TextStyle(
-              color: constantColors.darkColor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold),
-        ),
+        title: Container(
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('chatrooms')
+                    .doc(documentSnapshot.id)
+                    .collection('members')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    data = snapshot.data!.docs.firstWhere(((element) =>
+                        element.get('useruid') !=
+                        Provider.of<Authentication>(context, listen: false)
+                            .getUserUid));
+                    return Text(
+                      data.get('username'),
+                      style: TextStyle(
+                          color: constantColors.darkColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    );
+                  }
+                })),
         trailing: Container(
           width: 50,
           child: StreamBuilder<QuerySnapshot>(
@@ -689,11 +763,28 @@ class ChatroomHeplers with ChangeNotifier {
             );
           },
         ),
-        leading: CircleAvatar(
-          backgroundColor: constantColors.transparent,
-          backgroundImage: NetworkImage(directMessageAvatar(
-              documentSnapshot.get('roomavatar'), userImage)),
-        ));
+        leading: Container(
+            width: 40,
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('chatrooms')
+                    .doc(documentSnapshot.id)
+                    .collection('members')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    data = snapshot.data!.docs.firstWhere(((element) =>
+                        element.get('useruid') !=
+                        Provider.of<Authentication>(context, listen: false)
+                            .getUserUid));
+                    return CircleAvatar(
+                      backgroundColor: constantColors.transparent,
+                      backgroundImage: NetworkImage(data.get('userimage')),
+                    );
+                  }
+                })));
   }
 
   Future<bool> checkIfJoined(BuildContext context, String chatRoomName,
@@ -727,3 +818,16 @@ class ChatroomHeplers with ChangeNotifier {
     return data;
   }
 }
+
+        // title: Text(
+        //   directMessageRoomName(documentSnapshot.get('roomname'), userName),
+        //   style: TextStyle(
+        //       color: constantColors.darkColor,
+        //       fontSize: 16,
+        //       fontWeight: FontWeight.bold),
+        // ),
+        // CircleAvatar(
+        //   backgroundColor: constantColors.transparent,
+        //   backgroundImage: NetworkImage(directMessageAvatar(
+        //       documentSnapshot.get('roomavatar'), userImage)),
+        // ));

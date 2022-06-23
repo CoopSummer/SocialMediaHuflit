@@ -97,7 +97,6 @@ class DirectMessageHelpers with ChangeNotifier {
                 child: TextField(
                   onChanged: (value) async {
                     var data = await searchUser(context, value, chatRoomName);
-                    // print(data);
                   },
                   controller: userEmailController,
                   keyboardType: TextInputType.emailAddress,
@@ -143,7 +142,7 @@ class DirectMessageHelpers with ChangeNotifier {
                           .doc(data['useruid'])
                           .set({
                         'joined': true,
-                        'username': data['userimage'],
+                        'username': data['username'],
                         'userimage': data['userimage'],
                         'useruid': data['useruid'],
                         'time': Timestamp.now()
@@ -365,7 +364,6 @@ class DirectMessageHelpers with ChangeNotifier {
                                                       .collection('messages')
                                                       .doc(documentSnapshot.id)
                                                       .delete();
-                                                  print(chatRoomName);
                                                 },
                                                 icon: Icon(
                                                   FontAwesomeIcons.trashAlt,
@@ -609,20 +607,21 @@ class DirectMessageHelpers with ChangeNotifier {
     } catch (error) {
       return error;
     }
-    // try {
-    //   var user = data.docs.map((e) {
-    //     if (e.get('useremail').toString().contains(userEmail)) {
-    //       print(e.get('useruid'));
-    //       return e;
-    //     }
-    //   });
-    //   return user.map((e) => {
-    //         'useruid': e?.get('useruid'),
-    //         'username': e?.get('username'),
-    //         'userimage': e?.get('userimage')
-    //       });
-    // } catch (error) {
-    //   return error;
-    // }
+  }
+
+  getUserData(BuildContext context, String userUid, String chatRoomId) async {
+    DocumentReference _doc =
+        (FirebaseFirestore.instance.collection('users').doc(userUid));
+    var data = await _doc.get();
+    try {
+      // var user = data.docs.firstWhere((e) => e.get('useremail') == userEmail);
+      return {
+        'useruid': data.get('useruid'),
+        'username': data.get('username'),
+        'userimage': data.get('userimage')
+      };
+    } catch (error) {
+      return error;
+    }
   }
 }

@@ -9,7 +9,10 @@ import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:myapp/utils/UploadPost.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+
+import '../AltProfile/AltProfile.dart';
 
 class FeedHelpers with ChangeNotifier {
   ConstantColors constantColors = ConstantColors();
@@ -54,8 +57,10 @@ class FeedHelpers with ChangeNotifier {
           padding: const EdgeInsets.only(top: 8.0),
           child: Container(
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('posts').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('posts')
+                  .orderBy('time', descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
@@ -67,6 +72,7 @@ class FeedHelpers with ChangeNotifier {
                   );
                 } else {
                   return loadPosts(context, snapshot);
+                  return Container();
                 }
               },
             ),
@@ -96,56 +102,88 @@ class FeedHelpers with ChangeNotifier {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                GestureDetector(
-                  child: CircleAvatar(
-                    backgroundColor: constantColors.blueGreyColor,
-                    radius: 20.0,
-                    backgroundImage:
-                        NetworkImage(documentSnapshot.get('userimage')),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            FutureBuilder<dynamic>(
+                future: getUserImage(documentSnapshot.get('useruid')),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return Row(
                       children: [
-                        Container(
-                          child: Text(
-                            documentSnapshot.get('username'),
-                            style: TextStyle(
-                              color: constantColors.blueColor,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        GestureDetector(
+                          onTap: () {
+                            if (documentSnapshot.get('useruid') !=
+                                Provider.of<Authentication>(context,
+                                        listen: false)
+                                    .getUserUid) {
+                              Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      child: AltProfile(
+                                        userUid:
+                                            documentSnapshot.get('useruid'),
+                                      ),
+                                      type: PageTransitionType.bottomToTop));
+                            }
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: constantColors.transparent,
+                            radius: 20.0,
+                            backgroundImage:
+                                NetworkImage(snapshot.data['userimage']),
                           ),
                         ),
-                        Container(
-                            child: RichText(
-                          text: TextSpan(
-                              style: TextStyle(
-                                color: constantColors.blueColor,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text: '12 giờ trước',
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    snapshot.data['username'],
                                     style: TextStyle(
-                                        color: constantColors.darkGreyColor
-                                            .withOpacity(0.8)))
-                              ]),
-                        )),
+                                      color: constantColors.blueColor,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                FutureBuilder(
+                                    future: Provider.of<PostFunctions>(context,
+                                            listen: false)
+                                        .showTimeAgo(
+                                            documentSnapshot.get('time')),
+                                    builder: (context, snapshot) {
+                                      return Container(
+                                          child: RichText(
+                                        text: TextSpan(
+                                            style: TextStyle(
+                                              color: constantColors.blueColor,
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            children: <TextSpan>[
+                                              TextSpan(
+                                                  text:
+                                                      snapshot.data.toString(),
+                                                  style: TextStyle(
+                                                      color: constantColors
+                                                          .darkGreyColor
+                                                          .withOpacity(0.8)))
+                                            ]),
+                                      ));
+                                    }),
+                              ],
+                            ),
+                          ),
+                        )
                       ],
-                    ),
-                  ),
-                )
-              ],
-            ),
+                    );
+                  }
+                }),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, top: 8.0),
               child: Container(
@@ -156,26 +194,28 @@ class FeedHelpers with ChangeNotifier {
                     fontWeight: FontWeight.bold,
                     fontSize: 16.0,
                   ),
+                  // maxLines: null,
+                  // overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.46,
-              width: MediaQuery.of(context).size.width,
-              child: CarouselSlider(
-                items: [...documentSnapshot.get('postimage')]
-                    .map((e) => Container(
-                      child: Image.network(
-                            e,
-                            scale: 2,
-                            fit: BoxFit.fitHeight,
-                          ),
-                    ))
-                    .toList(),
-                options: CarouselOptions(
-                    autoPlay: false, enableInfiniteScroll: false),
-              ),
-            ),
+            // Container(
+            //   height: MediaQuery.of(context).size.height * 0.46,
+            //   width: MediaQuery.of(context).size.width,
+            //   child: CarouselSlider(
+            //     items: [...documentSnapshot.get('postimage')]
+            //         .map((e) => Container(
+            //               child: Image.network(
+            //                 e,
+            //                 scale: 2,
+            //                 fit: BoxFit.fitHeight,
+            //               ),
+            //             ))
+            //         .toList(),
+            //     options: CarouselOptions(
+            //         autoPlay: false, enableInfiniteScroll: false),
+            //   ),
+            // ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -347,11 +387,19 @@ class FeedHelpers with ChangeNotifier {
     }).toList());
   }
 
-  
+  getUserImage(String userUid) async {
+    CollectionReference collectionReference =
+        (FirebaseFirestore.instance.collection('users'));
+    var data = await collectionReference.get();
+    try {
+      var user = data.docs.firstWhere((e) => e.get('useruid') == userUid);
+      return {
+        'useruid': user.get('useruid'),
+        'username': user.get('username'),
+        'userimage': user.get('userimage')
+      };
+    } catch (error) {
+      return error;
+    }
+  }
 }
-// documentSnapshot.get('caption'),
-//                           style: TextStyle(
-//                             color: constantColors.greenColor,
-//                             fontWeight: FontWeight.bold,
-//                             fontSize: 16.0,
-//                           ),

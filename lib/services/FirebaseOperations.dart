@@ -63,14 +63,13 @@ class FirebaseOperations with ChangeNotifier {
         username: doc.get('username'),
         userimage: doc.get('userimage'),
         userpassword: doc.get('userpassword'),
-      ); 
-      if(userList.users.every((e) => e.useremail!=user.useremail)){
+      );
+      if (userList.users.every((e) => e.useremail != user.useremail)) {
         userList.users.add(user);
       }
       final String encodedData = Users.encode(userList.users);
-      print(encodedData);
       prefs.setString('users', encodedData);
-      
+
       notifyListeners();
     });
   }
@@ -97,14 +96,31 @@ class FirebaseOperations with ChangeNotifier {
   }
 
   Future submitChatroomData(String chatRoomName, dynamic data) async {
-    return FirebaseFirestore.instance.collection('chatrooms').doc(
-      chatRoomName
-    ).set(data);
+    return FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(chatRoomName)
+        .set(data);
+  }
+
+  Future getChatroomData(String chatRoomName) async {
+    DocumentSnapshot _doc = await FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(chatRoomName)
+        .get();
+    return _doc;
   }
 
   Future updateChatroomData(String chatRoomName, dynamic data) async {
-    return FirebaseFirestore.instance.collection('chatrooms').doc(
-      chatRoomName
-    ).update(data);
+    return FirebaseFirestore.instance
+        .collection('chatrooms')
+        .doc(chatRoomName)
+        .update(data);
+  }
+
+  Future updateUserData(String useruid, dynamic data) async {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(useruid)
+        .update(data);
   }
 }

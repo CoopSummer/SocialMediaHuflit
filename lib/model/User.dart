@@ -35,7 +35,7 @@ class Users {
 
   static Future<dynamic> loadData() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.reload();
+    await prefs.reload();
     final String jsonString = prefs.getString('users') ?? '[]';
     final List<dynamic> jsonResponse = json.decode(jsonString);
     return jsonResponse;
