@@ -315,6 +315,31 @@ class UploadPost with ChangeNotifier {
                         'useremail': Provider.of<FirebaseOperations>(context,
                                 listen: false)
                             .getInItUserEmail,
+                      }).whenComplete(() async {
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(Provider.of<Authentication>(context,
+                                    listen: false)
+                                .getUserUid)
+                            .collection('posts')
+                            .doc(captionController.text)
+                            .set({
+                          'postimage': getUploadPostImageUrl,
+                          'caption': captionController.text,
+                          'username': Provider.of<FirebaseOperations>(context,
+                                  listen: false)
+                              .getInitUserName,
+                          'userimage': Provider.of<FirebaseOperations>(context,
+                                  listen: false)
+                              .getInitUserImage,
+                          'useruid': Provider.of<Authentication>(context,
+                                  listen: false)
+                              .getUserUid,
+                          'time': Timestamp.now(),
+                          'useremail': Provider.of<FirebaseOperations>(context,
+                                  listen: false)
+                              .getInItUserEmail,
+                        });
                       }).whenComplete(() {
                         captionController.clear();
                         Navigator.pop(context);
