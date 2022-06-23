@@ -199,23 +199,23 @@ class FeedHelpers with ChangeNotifier {
                 ),
               ),
             ),
-            // Container(
-            //   height: MediaQuery.of(context).size.height * 0.46,
-            //   width: MediaQuery.of(context).size.width,
-            //   child: CarouselSlider(
-            //     items: [...documentSnapshot.get('postimage')]
-            //         .map((e) => Container(
-            //               child: Image.network(
-            //                 e,
-            //                 scale: 2,
-            //                 fit: BoxFit.fitHeight,
-            //               ),
-            //             ))
-            //         .toList(),
-            //     options: CarouselOptions(
-            //         autoPlay: false, enableInfiniteScroll: false),
-            //   ),
-            // ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.46,
+              width: MediaQuery.of(context).size.width,
+              child: CarouselSlider(
+                items: [...documentSnapshot.get('postimage')]
+                    .map((e) => Container(
+                          child: Image.network(
+                            e,
+                            scale: 2,
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                    autoPlay: false, enableInfiniteScroll: false),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [

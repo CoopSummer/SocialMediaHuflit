@@ -13,6 +13,7 @@ import 'package:myapp/screens/AltProfile/AltProfile.dart';
 import 'package:myapp/screens/Feed/FeedHelpers.dart';
 import 'package:myapp/screens/LandingPage/landingPage.dart';
 import 'package:myapp/screens/LandingPage/landingUtils.dart';
+import 'package:myapp/screens/PostDetail/PostDetail.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:page_transition/page_transition.dart';
@@ -164,13 +165,28 @@ class ProfileHelpers with ChangeNotifier {
                         width: MediaQuery.of(context).size.width * 0.2,
                         child: Column(
                           children: [
-                            Text(
-                              postCounting.toString(),
-                              style: TextStyle(
-                                  color: constantColors.darkGreyColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28),
-                            ),
+                            StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid)
+                                    .collection('posts')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
+                                  return Text(
+                                    snapshot.data!.docs.length.toString(),
+                                    style: TextStyle(
+                                        color: constantColors.darkColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 28),
+                                  );
+                                }),
                             Text(
                               'Posts',
                               style: TextStyle(
@@ -307,14 +323,19 @@ class ProfileHelpers with ChangeNotifier {
               return GridView(
                 children: snapshot.data!.docs
                     .map((DocumentSnapshot documentSnapshot) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      width: MediaQuery.of(context).size.width,
-                      child: FittedBox(
-                          child:
-                              Image.network(documentSnapshot.get('postimage')[0])),
+                  return GestureDetector(
+                    onTap: () {
+                      showPostDetails(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width,
+                        child: FittedBox(
+                            child: Image.network(
+                                documentSnapshot.get('postimage')[0])),
+                      ),
                     ),
                   );
                 }).toList(),
@@ -324,7 +345,7 @@ class ProfileHelpers with ChangeNotifier {
             }
           },
         ),
-        height: MediaQuery.of(context).size.height *0.45,
+        height: MediaQuery.of(context).size.height * 0.45,
         width: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             color: constantColors.darkColor.withOpacity(0.1),
@@ -804,7 +825,12 @@ class ProfileHelpers with ChangeNotifier {
         });
   }
 
-  showPostDetails(BuildContext context){
-
+  showPostDetails(BuildContext context) {
+    Navigator.pushReplacement(
+        context,
+        PageTransition(
+            child: PostDetail(
+                Provider.of<Authentication>(context, listen: false).getUserUid),
+            type: PageTransitionType.bottomToTop));
   }
 }

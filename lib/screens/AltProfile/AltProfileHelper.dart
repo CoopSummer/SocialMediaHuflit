@@ -8,6 +8,7 @@ import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/screens/AltProfile/AltProfile.dart';
 import 'package:myapp/screens/ChatRoom/ChatroomHelpers.dart';
 import 'package:myapp/screens/HomePage/Homepage.dart';
+import 'package:myapp/screens/PostDetail/PostDetail.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
 import 'package:myapp/utils/PostOptions.dart';
@@ -370,12 +371,45 @@ class AltProfileHelper with ChangeNotifier {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                color: constantColors.darkColor.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(15.0)),
-          )
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(snapshot.data.data()['useruid'])
+                        .collection('following')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else {
+                        return ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: snapshot.data!.docs
+                              .map((DocumentSnapshot documentSnapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  documentSnapshot.get('userimage'),
+                                  height: 60,
+                                  width: 60,
+                                ),
+                              );
+                            }
+                          }).toList(),
+                        );
+                      }
+                    }),
+                height: MediaQuery.of(context).size.height * 0.1,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: constantColors.darkColor.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(15.0)),
+              )
         ],
       ),
     );
@@ -385,46 +419,99 @@ class AltProfileHelper with ChangeNotifier {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        child: CustomScrollView(slivers: [
-          SliverFillRemaining(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Container(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('posts')
-                      .orderBy('time', descending: true)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: SizedBox(
-                          height: 500,
-                          width: 400,
-                          child: Lottie.asset('assets/animations/loading.json'),
-                        ),
-                      );
-                    } else {
-                      return loadPosts(context, snapshot,
-                          documentSnapshot.data.data()['useruid']);
-                    }
-                  },
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(documentSnapshot.data.data()['useruid'])
+              .collection('posts')
+              .orderBy('time', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: SizedBox(
+                  height: 500,
+                  width: 400,
+                  child: Lottie.asset('assets/animations/loading.json'),
                 ),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18))),
-              ),
-            ),
-          ),
-        ]),
+              );
+            } else {
+              return GridView(
+                children: snapshot.data!.docs
+                    .map((DocumentSnapshot documentSnapshot) {
+                  return GestureDetector(
+                    onTap: () {
+                      showPostDetails(
+                          context, documentSnapshot.get('useruid'));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        width: MediaQuery.of(context).size.width,
+                        child: FittedBox(
+                            child: Image.network(
+                                documentSnapshot.get('postimage')[0])),
+                      ),
+                    ),
+                  );
+                }).toList(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2),
+              );
+            }
+          },
+        ),
+        height: MediaQuery.of(context).size.height * 0.45,
+        width: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
             color: constantColors.darkColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(5.0)),
       ),
     );
+    // return Padding(
+    //   padding: const EdgeInsets.all(8.0),
+    //   child: Container(
+    //     child: CustomScrollView(slivers: [
+    //       SliverFillRemaining(
+    //         child: Padding(
+    //           padding: const EdgeInsets.only(top: 8.0),
+    //           child: Container(
+    //             child: StreamBuilder<QuerySnapshot>(
+    //               stream: FirebaseFirestore.instance
+    //                   .collection('posts')
+    //                   .orderBy('time', descending: true)
+    //                   .snapshots(),
+    //               builder: (context, snapshot) {
+    //                 if (snapshot.connectionState == ConnectionState.waiting) {
+    //                   return Center(
+    //                     child: SizedBox(
+    //                       height: 500,
+    //                       width: 400,
+    //                       child: Lottie.asset('assets/animations/loading.json'),
+    //                     ),
+    //                   );
+    //                 } else {
+    //                   return loadPosts(context, snapshot,
+    //                       documentSnapshot.data.data()['useruid']);
+    //                 }
+    //               },
+    //             ),
+    //             height: MediaQuery.of(context).size.height,
+    //             width: MediaQuery.of(context).size.width,
+    //             decoration: const BoxDecoration(
+    //                 borderRadius: BorderRadius.only(
+    //                     topLeft: Radius.circular(18),
+    //                     topRight: Radius.circular(18))),
+    //           ),
+    //         ),
+    //       ),
+    //     ]),
+    //     decoration: BoxDecoration(
+    //         color: constantColors.darkColor.withOpacity(0.1),
+    //         borderRadius: BorderRadius.circular(5.0)),
+    //   ),
+    // );
   }
 
   Widget loadPosts(BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot,
@@ -852,5 +939,12 @@ class AltProfileHelper with ChangeNotifier {
                 }),
           );
         });
+  }
+
+  showPostDetails(BuildContext context, String userUid) {
+    Navigator.pushReplacement(
+        context,
+        PageTransition(
+            child: PostDetail(userUid), type: PageTransitionType.bottomToTop));
   }
 }
