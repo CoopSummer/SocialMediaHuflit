@@ -826,7 +826,7 @@ class ProfileHelpers with ChangeNotifier {
   }
 
   showPostDetails(BuildContext context) {
-    Navigator.pushReplacement(
+    Navigator.push(
         context,
         PageTransition(
             child: PostDetail(
