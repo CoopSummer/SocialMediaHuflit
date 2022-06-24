@@ -434,11 +434,12 @@ class ProfileHelpers with ChangeNotifier {
                   onPressed: () {
                     Provider.of<Authentication>(context, listen: false)
                         .logOutViaEmail()
-                        .whenComplete(() => Navigator.pushReplacement(
+                        .whenComplete(() => Navigator.pushAndRemoveUntil(
                             context,
                             PageTransition(
                                 child: LandingPage(),
-                                type: PageTransitionType.bottomToTop)));
+                                type: PageTransitionType.bottomToTop),
+                            (Route<dynamic> route) => false));
                   })
             ],
           );

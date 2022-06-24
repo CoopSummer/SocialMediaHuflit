@@ -146,4 +146,27 @@ class FirebaseOperations with ChangeNotifier {
           .set(followerData);
     });
   }
+
+    Future unfollowUser(
+      String followingUid,
+      String followingDocId,
+      dynamic followingData,
+      String followerUid,
+      String followerDocId,
+      dynamic followerData) async {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(followingUid)
+        .collection('followers')
+        .doc(followingDocId)
+        .delete()
+        .whenComplete(() async {
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc(followerUid)
+          .collection('following')
+          .doc(followerDocId)
+          .delete();
+    });
+  }
 }

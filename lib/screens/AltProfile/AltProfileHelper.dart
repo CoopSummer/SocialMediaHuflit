@@ -66,6 +66,7 @@ class AltProfileHelper with ChangeNotifier {
   }
 
   Widget headerProfile(BuildContext context, dynamic snapshot, String userUid) {
+    checkFollow(context, snapshot);
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width,
@@ -196,13 +197,26 @@ class AltProfileHelper with ChangeNotifier {
                             width: MediaQuery.of(context).size.width * 0.2,
                             child: Column(
                               children: [
-                                Text(
-                                  postCounting.toString(),
-                                  style: TextStyle(
-                                      color: constantColors.darkColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28),
-                                ),
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(snapshot.data.data()['useruid'])
+                                        .collection('posts')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                      return Text(
+                                        snapshot.data!.docs.length.toString(),
+                                        style: TextStyle(
+                                            color: constantColors.darkColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 28),
+                                      );
+                                    }),
                                 Text(
                                   'Posts',
                                   style: TextStyle(
@@ -253,60 +267,156 @@ class AltProfileHelper with ChangeNotifier {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              OutlinedButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all(BorderSide(
-                        width: 1.5,
-                        color: constantColors.lightGreyColor,
-                        style: BorderStyle.solid))),
-                onPressed: () {
-                  Provider.of<FirebaseOperations>(context, listen: false)
-                      .followUser(
-                          userUid,
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(snapshot.data.data()['useruid'])
+                      .collection('followers')
+                      .snapshots(),
+                  builder: (context, _snapshot) {
+                    if (_snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else {
+                      print(_snapshot.data!.docs.any((element) =>
+                          element.get('useruid') ==
                           Provider.of<Authentication>(context, listen: false)
-                              .getUserUid,
-                          {
-                            'username': Provider.of<FirebaseOperations>(context,
+                              .getUserUid));
+                      if (_snapshot.data!.docs.any((element) =>
+                          element.get('useruid') ==
+                          Provider.of<Authentication>(context, listen: false)
+                              .getUserUid)) {
+                        return OutlinedButton(
+                          style: ButtonStyle(
+                              side: MaterialStateProperty.all(BorderSide(
+                                  width: 1.5,
+                                  color: constantColors.lightGreyColor,
+                                  style: BorderStyle.solid))),
+                          onPressed: () {
+                            Provider.of<FirebaseOperations>(context,
                                     listen: false)
-                                .getInitUserName,
-                            'userimage': Provider.of<FirebaseOperations>(
-                                    context,
-                                    listen: false)
-                                .getInitUserImage,
-                            'useremail': Provider.of<FirebaseOperations>(
-                                    context,
-                                    listen: false)
-                                .getInItUserEmail,
-                            'useruid': Provider.of<Authentication>(context,
-                                    listen: false)
-                                .getUserUid,
-                            'time': Timestamp.now()
+                                .unfollowUser(
+                                    userUid,
+                                    Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid,
+                                    {
+                                      'username':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInitUserName,
+                                      'userimage':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInitUserImage,
+                                      'useremail':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInItUserEmail,
+                                      'useruid': Provider.of<Authentication>(
+                                              context,
+                                              listen: false)
+                                          .getUserUid,
+                                      'time': Timestamp.now()
+                                    },
+                                    Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid,
+                                    userUid,
+                                    {
+                                      'username':
+                                          snapshot.data.data()['username'],
+                                      'userimage':
+                                          snapshot.data.data()['userimage'],
+                                      'useremail':
+                                          snapshot.data.data()['useremail'],
+                                      'useruid':
+                                          snapshot.data.data()['useruid'],
+                                      'time': Timestamp.now()
+                                    });
                           },
-                          Provider.of<Authentication>(context, listen: false)
-                              .getUserUid,
-                          userUid,
-                          {
-                            'username': snapshot.data.data()['username'],
-                            'userimage': snapshot.data.data()['userimage'],
-                            'useremail': snapshot.data.data()['useremail'],
-                            'useruid': snapshot.data.data()['useruid'],
-                            'time': Timestamp.now()
-                          })
-                      .whenComplete(() {
-                    followedNotification(
-                        context, snapshot.data.data()['username']);
-                  });
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 50, right: 50),
-                  child: Text(
-                    'Follow',
-                    style: TextStyle(
-                        color: constantColors.darkGreyColor,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 40, right: 40),
+                            child: Text(
+                              'Following',
+                              style: TextStyle(
+                                  color: constantColors.darkGreyColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return OutlinedButton(
+                          style: ButtonStyle(
+                              side: MaterialStateProperty.all(BorderSide(
+                                  width: 1.5,
+                                  color: constantColors.lightGreyColor,
+                                  style: BorderStyle.solid))),
+                          onPressed: () {
+                            Provider.of<FirebaseOperations>(context,
+                                    listen: false)
+                                .followUser(
+                                    userUid,
+                                    Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid,
+                                    {
+                                      'username':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInitUserName,
+                                      'userimage':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInitUserImage,
+                                      'useremail':
+                                          Provider.of<FirebaseOperations>(
+                                                  context,
+                                                  listen: false)
+                                              .getInItUserEmail,
+                                      'useruid': Provider.of<Authentication>(
+                                              context,
+                                              listen: false)
+                                          .getUserUid,
+                                      'time': Timestamp.now()
+                                    },
+                                    Provider.of<Authentication>(context,
+                                            listen: false)
+                                        .getUserUid,
+                                    userUid,
+                                    {
+                                      'username':
+                                          snapshot.data.data()['username'],
+                                      'userimage':
+                                          snapshot.data.data()['userimage'],
+                                      'useremail':
+                                          snapshot.data.data()['useremail'],
+                                      'useruid':
+                                          snapshot.data.data()['useruid'],
+                                      'time': Timestamp.now()
+                                    })
+                                .whenComplete(() {
+                              followedNotification(
+                                  context, snapshot.data.data()['username']);
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 40, right: 40),
+                            child: Text(
+                              'Follow',
+                              style: TextStyle(
+                                  color: constantColors.darkGreyColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  }),
               OutlinedButton(
                   style: ButtonStyle(
                       side: MaterialStateProperty.all(BorderSide(
@@ -371,45 +481,45 @@ class AltProfileHelper with ChangeNotifier {
             ),
           ),
           Container(
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(snapshot.data.data()['useruid'])
-                        .collection('following')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else {
-                        return ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: snapshot.data!.docs
-                              .map((DocumentSnapshot documentSnapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
-                                  documentSnapshot.get('userimage'),
-                                  height: 60,
-                                  width: 60,
-                                ),
-                              );
-                            }
-                          }).toList(),
-                        );
-                      }
-                    }),
-                height: MediaQuery.of(context).size.height * 0.1,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: constantColors.darkColor.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(15.0)),
-              )
+            child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(snapshot.data.data()['useruid'])
+                    .collection('following')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: snapshot.data!.docs
+                          .map((DocumentSnapshot documentSnapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(
+                              documentSnapshot.get('userimage'),
+                              height: 60,
+                              width: 60,
+                            ),
+                          );
+                        }
+                      }).toList(),
+                    );
+                  }
+                }),
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: constantColors.darkColor.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(15.0)),
+          )
         ],
       ),
     );
@@ -441,8 +551,7 @@ class AltProfileHelper with ChangeNotifier {
                     .map((DocumentSnapshot documentSnapshot) {
                   return GestureDetector(
                     onTap: () {
-                      showPostDetails(
-                          context, documentSnapshot.get('useruid'));
+                      showPostDetails(context, documentSnapshot.get('useruid'));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8),
@@ -946,5 +1055,17 @@ class AltProfileHelper with ChangeNotifier {
         context,
         PageTransition(
             child: PostDetail(userUid), type: PageTransitionType.bottomToTop));
+  }
+
+  Future checkFollow(BuildContext context, dynamic snapshot) async {
+    var data;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(snapshot.data.data()['useruid'])
+        .collection('followers')
+        .doc(Provider.of<Authentication>(context, listen: false).getUserUid)
+        .get()
+        .then((value) => data = (value.exists));
+    return data;
   }
 }
