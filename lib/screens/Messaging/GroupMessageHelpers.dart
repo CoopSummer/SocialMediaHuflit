@@ -208,7 +208,11 @@ class GroupMessageHelpers with ChangeNotifier {
                     child: Container(
                         width: MediaQuery.of(context).size.width,
                         constraints: BoxConstraints(
-                          minHeight: documentSnapshot.get('message') != null
+                          minHeight: documentSnapshot
+                                      .data()
+                                      .toString()
+                                      .contains('message') ==
+                                  true
                               ? MediaQuery.of(context).size.height * 0.1
                               : MediaQuery.of(context).size.height * 0.2,
                         ),
@@ -221,20 +225,24 @@ class GroupMessageHelpers with ChangeNotifier {
                                 children: [
                                   Container(
                                     constraints: BoxConstraints(
-                                        minHeight:
-                                            documentSnapshot.get('message') !=
-                                                    null
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.1
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.4,
+                                        minHeight: documentSnapshot
+                                                    .data()
+                                                    .toString()
+                                                    .contains('message') ==
+                                                true
+                                            ? MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.1
+                                            : MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.3,
                                         maxWidth: documentSnapshot
-                                                    .get('message') !=
-                                                null
+                                                    .data()
+                                                    .toString()
+                                                    .contains('message') ==
+                                                true
                                             ? MediaQuery.of(context)
                                                     .size
                                                     .width *
@@ -265,6 +273,8 @@ class GroupMessageHelpers with ChangeNotifier {
                                           Container(
                                             width: 150,
                                             child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Text(
                                                     documentSnapshot
@@ -298,8 +308,11 @@ class GroupMessageHelpers with ChangeNotifier {
                                               ],
                                             ),
                                           ),
-                                          documentSnapshot.get('message') !=
-                                                  null
+                                          documentSnapshot
+                                                      .data()
+                                                      .toString()
+                                                      .contains('message') ==
+                                                  true
                                               ? Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -316,10 +329,10 @@ class GroupMessageHelpers with ChangeNotifier {
                                               : Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          top: 8.0),
+                                                          top: 8.0, right: 16),
                                                   child: Container(
-                                                    height: 90,
-                                                    width: 100,
+                                                    height: 150,
+                                                    width: 150,
                                                     child: Image.network(
                                                         documentSnapshot
                                                             .get('sticker')),
@@ -582,7 +595,9 @@ class GroupMessageHelpers with ChangeNotifier {
           .getInitUserName,
       'userimage': Provider.of<FirebaseOperations>(context, listen: false)
           .getInitUserImage,
-      'time': Timestamp.now()
+      'useruid':Provider.of<Authentication>(context, listen: false)
+          .getUserUid,
+      'time': Timestamp.now(),
     });
   }
 

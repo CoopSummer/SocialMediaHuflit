@@ -544,7 +544,11 @@ class ChatroomHeplers with ChangeNotifier {
             }
             if (snapshot.data?.docs.isEmpty == false) {
               if (snapshot.data?.docs.first.get('username') != null &&
-                  snapshot.data?.docs.first.get('message') != null) {
+                  snapshot.data?.docs.first
+                          .data()
+                          .toString()
+                          .contains('message') ==
+                      true) {
                 return Text(
                     '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
                     style: TextStyle(
@@ -553,7 +557,11 @@ class ChatroomHeplers with ChangeNotifier {
                         fontWeight: FontWeight.bold));
               }
               if (snapshot.data!.docs.first.get('username') != null &&
-                  snapshot.data!.docs.first.get('messages') != null) {
+                  snapshot.data?.docs.first
+                          .data()
+                          .toString()
+                          .contains('message') ==
+                      true) {
                 return Text(
                     '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
                     style: TextStyle(
@@ -727,7 +735,11 @@ class ChatroomHeplers with ChangeNotifier {
             }
             if (snapshot.data?.docs.isEmpty == false) {
               if (snapshot.data?.docs.first.get('username') != null &&
-                  snapshot.data?.docs.first.get('message') != null) {
+                  snapshot.data?.docs.first
+                          .data()
+                          .toString()
+                          .contains('message') ==
+                      true) {
                 return Text(
                     '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
                     style: TextStyle(
@@ -736,7 +748,11 @@ class ChatroomHeplers with ChangeNotifier {
                         fontWeight: FontWeight.bold));
               }
               if (snapshot.data!.docs.first.get('username') != null &&
-                  snapshot.data!.docs.first.get('messages') != null) {
+                  snapshot.data?.docs.first
+                          .data()
+                          .toString()
+                          .contains('message') ==
+                      true) {
                 return Text(
                     '${snapshot.data!.docs.first.get('username')} : ${snapshot.data!.docs.first.get('message')}',
                     style: TextStyle(
