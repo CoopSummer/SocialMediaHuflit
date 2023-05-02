@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:myapp/constants/Constantcolors.dart';
 import 'package:myapp/firebase_options.dart';
 import 'package:myapp/screens/AltProfile/AltProfileHelper.dart';
@@ -22,9 +24,28 @@ import 'package:myapp/screens/Profile/ProfileHelpers.dart';
 import 'package:myapp/screens/SplashScreen/splashScreen.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
+import 'package:myapp/services/Notification.dart';
 import 'package:myapp/utils/PostOptions.dart';
 import 'package:myapp/utils/UploadPost.dart';
 import 'package:provider/provider.dart';
+
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high,
+    playSound: true);
+
+// flutter local notification
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+// firebase background message handler
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('A Background message just showed up :  ${message.messageId}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +84,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => DirectMessageHelpers()),
           ChangeNotifierProvider(create: (_) => AltProfileHelper()),
           ChangeNotifierProvider(create: (_) => PostDetailHelpers()),
+          ChangeNotifierProvider(create: (_) => Notifications()),
         ]);
   }
 }

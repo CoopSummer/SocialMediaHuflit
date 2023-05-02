@@ -13,6 +13,7 @@ import 'package:myapp/screens/Messaging/GroupMessage.dart';
 import 'package:myapp/screens/Messaging/GroupMessageHelpers.dart';
 import 'package:myapp/services/Authentication.dart';
 import 'package:myapp/services/FirebaseOperations.dart';
+import 'package:myapp/services/Notification.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -485,11 +486,11 @@ class ChatroomHeplers with ChangeNotifier {
   Widget showChatroom(BuildContext context, DocumentSnapshot documentSnapshot) {
     return ListTile(
         onTap: () {
-          Navigator.pushReplacement(
-              context,
-              PageTransition(
-                  child: GroupMessage(documentSnapshot),
-                  type: PageTransitionType.leftToRight));
+          // Navigator.pushReplacement(
+          //     context,
+          //     PageTransition(
+          //         child: GroupMessage(documentSnapshot),
+          //         type: PageTransitionType.leftToRight));
         },
         onLongPress: () {
           showChatroomDetails(context, documentSnapshot);
